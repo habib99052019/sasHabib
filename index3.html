@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Get In Touch</title>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:      #1877f2;
+    --blue-dark: #1464d8;
+    --blue-glow: rgba(24,119,242,.18);
+    --success:   #00c853;
+    --error:     #e53935;
+    --text:      #1a1a2e;
+    --sub:       #5a6072;
+    --border:    #dde3f0;
+    --bg:        #eef2fb;
+    --card:      #ffffff;
+    --radius:    18px;
+    --shadow:    0 8px 40px rgba(24,119,242,.13), 0 2px 8px rgba(0,0,0,.07);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: -apple-system, 'SF Pro Display', 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px 16px 80px; /* bottom pad for sticky btn */
+    background: linear-gradient(145deg, #e8effc 0%, #dce8fa 50%, #e4edfb 100%);
+  }
+
+  /* ── Subtle animated background dots ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(24,119,242,.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Card ── */
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px 24px 24px;
+    animation: slideUp .45s cubic-bezier(.22,.68,0,1.2) both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(28px) scale(.97); }
+    to   { opacity: 1; transform: translateY(0)  scale(1);    }
+  }
+
+  /* ── Header ── */
+  .brand-mark {
+    width: 48px; height: 48px;
+    background: var(--blue);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px var(--blue-glow);
+  }
+  .brand-mark svg { width: 26px; height: 26px; fill: #fff; }
+
+  .card h1 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: -.5px;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .card .subtitle {
+    font-size: .9rem;
+    color: var(--sub);
+    margin-bottom: 28px;
+    line-height: 1.4;
+  }
+
+  /* ── Fields ── */
+  .field { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .3px;
+    color: var(--sub);
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 15px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text);
+    background: #f5f7fc;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+    -webkit-appearance: none;
+    appearance: none;
+    caret-color: var(--blue);
+  }
+
+  input::placeholder, textarea::placeholder { color: #aab0c4; }
+
+  input:focus, textarea:focus {
+    border-color: var(--blue);
+    background: #fff;
+    box-shadow: 0 0 0 4px var(--blue-glow);
+  }
+
+  input.error, textarea.error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 4px rgba(229,57,53,.1);
+  }
+
+  .err-msg {
+    font-size: .78rem;
+    color: var(--error);
+    margin-top: 5px;
+    display: none;
+    font-weight: 500;
+  }
+  .err-msg.show { display: block; animation: shake .3s ease; }
+
+  @keyframes shake {
+    0%,100%{ transform:translateX(0)  }
+    25%     { transform:translateX(-5px) }
+    75%     { transform:translateX(5px)  }
+  }
+
+  textarea { resize: none; height: 90px; line-height: 1.5; }
+
+  /* ── Optional badge ── */
+  .opt-badge {
+    display: inline-block;
+    font-size: .65rem;
+    font-weight: 600;
+    color: var(--sub);
+    background: #eef0f7;
+    padding: 2px 7px;
+    border-radius: 50px;
+    margin-left: 6px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+  }
+
+  /* ── Submit button ── */
+  .btn-wrap {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 12px 16px 20px;
+    background: linear-gradient(to top, rgba(238,242,251,1) 60%, rgba(238,242,251,0));
+  }
+
+  .btn-wrap-inner { max-width: 420px; margin: 0 auto; }
+
+  #submitBtn {
+    width: 100%;
+    padding: 17px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--blue);
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    letter-spacing: .2px;
+    box-shadow: 0 4px 20px var(--blue-glow);
+    transition: background .15s, transform .12s, box-shadow .15s;
+    -webkit-appearance: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #submitBtn:active {
+    transform: scale(.97);
+    background: var(--blue-dark);
+    box-shadow: 0 2px 8px var(--blue-glow);
+  }
+
+  /* Ripple */
+  #submitBtn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,.3);
+    transform: scale(0);
+    animation: ripple .5s linear;
+    pointer-events: none;
+  }
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  #submitBtn:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* Loading spinner inside btn */
+  #submitBtn .spinner {
+    display: none;
+    width: 20px; height: 20px;
+    border: 3px solid rgba(255,255,255,.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin: 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #submitBtn .btn-text { transition: opacity .2s; }
+  #submitBtn.loading .btn-text { display:none; }
+  #submitBtn.loading .spinner  { display:block; }
+
+  /* ── Trust line ── */
+  .trust {
+    text-align: center;
+    font-size: .73rem;
+    color: #aab0c4;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .trust svg { width:13px; height:13px; fill:#aab0c4; flex-shrink:0; }
+
+  /* ── Success State ── */
+  #successMsg {
+    display: none;
+    text-align: center;
+    animation: fadeIn .5s ease both;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:scale(.9)} to{opacity:1;transform:scale(1)} }
+
+  .check-circle {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #00c853, #00e676);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 6px 24px rgba(0,200,83,.25);
+  }
+  .check-circle svg { width: 36px; height: 36px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+  #successMsg h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  #successMsg p {
+    font-size: .93rem;
+    color: var(--sub);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+
+  #waBtn {
+    display: none; /* shown after submit if WA enabled */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    background: #25d366;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 18px rgba(37,211,102,.3);
+    transition: transform .12s, box-shadow .15s;
+  }
+  #waBtn:active { transform: scale(.97); }
+  #waBtn svg { width: 22px; height: 22px; fill: #fff; flex-shrink:0; }
+
+  /* ── Utility ── */
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ CARD ════════════════════════ -->
+<div class="card" id="mainCard">
+
+  <!-- Brand -->
+  <div class="brand-mark">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-11h2v6h-2zm0-4h2v2h-2z"/></svg>
+  </div>
+
+  <!-- Form view -->
+  <div id="formView">
+    <h1>Let's Talk</h1>
+    <p class="subtitle">Fill in your details and we'll get back to you shortly.</p>
+
+    <form id="leadForm" novalidate autocomplete="on">
+
+      <!-- Full Name -->
+      <div class="field">
+        <label for="fullName">Full Name</label>
+        <input
+          type="text"
+          id="fullName"
+          name="fullName"
+          placeholder="Your full name"
+          autocomplete="name"
+          inputmode="text"
+          required
+        >
+        <div class="err-msg" id="nameErr">Please enter your full name.</div>
+      </div>
+
+      <!-- Phone -->
+      <div class="field">
+        <label for="phone">Phone Number</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="+1 234 567 8900"
+          autocomplete="tel"
+          inputmode="tel"
+          required
+        >
+        <div class="err-msg" id="phoneErr">Please enter a valid phone number.</div>
+      </div>
+
+      <!-- Message -->
+      <div class="field">
+        <label for="message">Message <span class="opt-badge">Optional</span></label>
+        <textarea
+          id="message"
+          name="message"
+          placeholder="What can we help you with?"
+        ></textarea>
+      </div>
+
+      <!-- Trust line -->
+      <div class="trust">
+        <svg viewBox="0 0 24 24"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>
+        Your information is 100% private &amp; secure.
+      </div>
+
+    </form>
+  </div><!-- /formView -->
+
+  <!-- Success view -->
+  <div id="successMsg">
+    <div class="check-circle">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>You're all set! 🎉</h2>
+    <p>We received your message and will reach out to you very soon.</p>
+    <a id="waBtn" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Continue on WhatsApp
+    </a>
+  </div>
+
+</div><!-- /card -->
+
+<!-- ════════ Sticky Submit Button ════════ -->
+<div class="btn-wrap" id="btnWrap">
+  <div class="btn-wrap-inner">
+    <button type="button" id="submitBtn">
+      <span class="btn-text">Send My Request →</span>
+      <div class="spinner"></div>
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════ SCRIPTS ════════════════════════ -->
+<script>
+/* ─── CONFIG ─── change these values ─── */
+var CONFIG = {
+  apiEndpoint: 'https://your-api.example.com/leads',   // ← your POST endpoint
+  whatsappEnabled: true,
+  whatsappNumber: '1234567890',                         // ← digits only, with country code
+  whatsappMessage: 'Hi! I just submitted a form and would like to learn more.'
+};
+
+/* ─── Facebook Pixel stub (safe to call even if pixel not loaded) ─── */
+function fbTrack(event) {
+  try {
+    if (typeof fbq === 'function') { fbq('track', event); }
+  } catch(e) {}
+}
+
+/* ─── DOM refs ─── */
+var form       = document.getElementById('leadForm');
+var formView   = document.getElementById('formView');
+var successMsg = document.getElementById('successMsg');
+var submitBtn  = document.getElementById('submitBtn');
+var btnWrap    = document.getElementById('btnWrap');
+var nameInput  = document.getElementById('fullName');
+var phoneInput = document.getElementById('phone');
+var msgInput   = document.getElementById('message');
+var nameErr    = document.getElementById('nameErr');
+var phoneErr   = document.getElementById('phoneErr');
+var waBtn      = document.getElementById('waBtn');
+
+/* ─── Auto-focus first field (after tiny delay for in-app browsers) ─── */
+setTimeout(function() {
+  try { nameInput.focus(); } catch(e) {}
+}, 300);
+
+/* ─── Ripple effect ─── */
+submitBtn.addEventListener('click', function(e) {
+  var rect   = submitBtn.getBoundingClientRect();
+  var x      = (e.clientX || rect.left + rect.width/2) - rect.left;
+  var y      = (e.clientY || rect.top  + rect.height/2) - rect.top;
+  var ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.cssText = 'width:' + rect.width + 'px;height:' + rect.width + 'px;left:' + (x - rect.width/2) + 'px;top:' + (y - rect.width/2) + 'px';
+  submitBtn.appendChild(ripple);
+  setTimeout(function(){ ripple.remove(); }, 600);
+  handleSubmit();
+});
+
+/* ─── Validation ─── */
+function validate() {
+  var ok = true;
+
+  // Name
+  var name = nameInput.value.trim();
+  if (name.length < 2) {
+    showErr(nameInput, nameErr); ok = false;
+  } else {
+    clearErr(nameInput, nameErr);
+  }
+
+  // Phone – allow +, digits, spaces, dashes, parens; min 7 digits
+  var phone = phoneInput.value.trim();
+  var digits = phone.replace(/\D/g, '');
+  if (digits.length < 7) {
+    showErr(phoneInput, phoneErr); ok = false;
+  } else {
+    clearErr(phoneInput, phoneErr);
+  }
+
+  return ok;
+}
+
+function showErr(input, msg) {
+  input.classList.add('error');
+  msg.classList.add('show');
+}
+function clearErr(input, msg) {
+  input.classList.remove('error');
+  msg.classList.remove('show');
+}
+
+/* ─── Live clear on input ─── */
+nameInput.addEventListener('input', function(){ clearErr(nameInput, nameErr); });
+phoneInput.addEventListener('input', function(){ clearErr(phoneInput, phoneErr); });
+
+/* ─── Submit handler ─── */
+function handleSubmit() {
+  if (!validate()) return;
+
+  var payload = {
+    fullName: nameInput.value.trim(),
+    phone:    phoneInput.value.trim(),
+    message:  msgInput.value.trim(),
+    source:   'facebook-lead-form',
+    ts:       new Date().toISOString()
+  };
+
+  submitBtn.disabled = true;
+  submitBtn.classList.add('loading');
+
+  /* POST to API */
+  sendToApi(payload, function(success) {
+    /* Fire Facebook Pixel regardless of API result */
+    fbTrack('Lead');
+
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+
+    showSuccess(payload);
+  });
+}
+
+/* ─── API call (graceful fallback) ─── */
+function sendToApi(data, callback) {
+  try {
+    fetch(CONFIG.apiEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(function(res) { callback(res.ok); })
+    .catch(function()   { callback(false);  }); // still show success to user
+  } catch(e) {
+    callback(false);
+  }
+}
+
+/* ─── Show success ─── */
+function showSuccess(payload) {
+  formView.classList.add('hidden');
+  submitBtn.closest('.btn-wrap').classList.add('hidden');
+  successMsg.style.display = 'block';
+
+  if (CONFIG.whatsappEnabled) {
+    var text = encodeURIComponent(CONFIG.whatsappMessage);
+    waBtn.href = 'https://wa.me/' + CONFIG.whatsappNumber + '?text=' + text;
+    waBtn.style.display = 'flex';
+  }
+}
+</script>
+
+<!--
+  ════════════════════════════════════════════
+  Facebook Pixel — paste your snippet here:
+  ════════════════════════════════════════════
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    ...
+    fbq('init', 'YOUR_PIXEL_ID');
+    fbq('track', 'PageView');
+  </script>
+  ════════════════════════════════════════════
+-->
+
+</body>
+</html>

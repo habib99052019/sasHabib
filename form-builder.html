@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FormCraft — Landing Page Builder</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Cairo:wght@400;600;700;800&display=swap');
+:root{
+  --blue:#1877f2;--blue-dark:#0f5fcc;--blue-light:#e8f1fd;--blue-glow:rgba(24,119,242,0.18);
+  --green:#22c55e;--red:#ef4444;--purple:#7c3aed;--purple-light:#f5f0ff;--purple-border:#c4b5fd;
+  --bg:#f0f4fb;--card:#fff;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;
+  --radius:16px;--radius-sm:10px;
+  --shadow:0 4px 24px rgba(24,119,242,.10),0 1px 4px rgba(0,0,0,.06);
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --tr:.28s cubic-bezier(.4,0,.2,1);
+}
+[dir="rtl"]{--font-head:'Cairo',sans-serif;--font-body:'Cairo',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden}
+
+/* HEADER */
+.app-header{width:100%;background:var(--card);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.05);gap:10px}
+.header-left{display:flex;align-items:center;gap:10px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:800;font-size:1.1rem;color:var(--blue);white-space:nowrap}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),#4f86f7);border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px var(--blue-glow);flex-shrink:0}
+.logo-icon svg{width:18px;height:18px;fill:#fff}
+.step-badge{font-size:.72rem;font-weight:600;background:var(--blue-light);color:var(--blue);padding:4px 10px;border-radius:20px;white-space:nowrap}
+.lang-switcher{display:flex;gap:3px;background:var(--blue-light);border-radius:20px;padding:3px}
+.lang-btn{border:none;background:transparent;color:var(--muted);font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:16px;cursor:pointer;font-family:var(--font-body);transition:all var(--tr)}
+.lang-btn.active{background:var(--blue);color:#fff;box-shadow:0 2px 8px var(--blue-glow)}
+
+/* PROGRESS */
+.progress-wrap{width:100%;padding:0 20px;background:var(--card);border-bottom:1px solid var(--border)}
+.step-indicators{display:flex;justify-content:space-between;padding:12px 0 0;position:relative}
+.step-indicators::before{content:'';position:absolute;top:22px;left:14px;right:14px;height:2px;background:var(--border);z-index:0}
+.step-indicators::after{content:'';position:absolute;top:22px;left:14px;height:2px;background:linear-gradient(90deg,var(--blue),#4f86f7);z-index:1;transition:width var(--tr);width:var(--progress-width,0%)}
+[dir="rtl"] .step-indicators::after{left:auto;right:14px;background:linear-gradient(270deg,var(--blue),#4f86f7)}
+.step-dot{display:flex;flex-direction:column;align-items:center;gap:6px;z-index:2}
+.step-dot-circle{width:28px;height:28px;border-radius:50%;background:var(--card);border:2.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;font-family:var(--font-head);color:var(--muted);transition:all var(--tr)}
+.step-dot.active .step-dot-circle{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 0 0 4px var(--blue-glow);transform:scale(1.1)}
+.step-dot.done .step-dot-circle{background:var(--green);border-color:var(--green);color:#fff}
+.step-dot-label{font-size:.52rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;transition:color var(--tr)}
+.step-dot.active .step-dot-label{color:var(--blue)}
+.step-dot.done .step-dot-label{color:var(--green)}
+.progress-bar-track{height:3px;background:var(--border);border-radius:10px;margin:10px 0 0;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),#4f86f7);border-radius:10px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* MAIN */
+.main{flex:1;width:100%;max-width:520px;padding:20px 16px 100px;display:flex;flex-direction:column;gap:14px}
+
+/* CARD */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 20px;animation:fadeUp .35s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.card-title{font-family:var(--font-head);font-weight:700;font-size:1.2rem;color:var(--text);margin-bottom:4px}
+.card-sub{font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+/* INPUTS */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+label{font-size:.8rem;font-weight:600;color:var(--text)}
+.label-opt{font-weight:400;color:var(--muted);font-size:.75rem;margin-inline-start:4px}
+input[type="text"],input[type="email"],input[type="tel"],textarea,select{
+  width:100%;padding:13px 15px;border:2px solid var(--border);border-radius:var(--radius-sm);
+  font-size:.95rem;font-family:var(--font-body);color:var(--text);background:#fafbfc;outline:none;
+  transition:border-color var(--tr),box-shadow var(--tr),background var(--tr);-webkit-appearance:none;text-align:inherit}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-inline-end:36px}
+[dir="rtl"] select{background-position:left 14px center}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px var(--blue-glow)}
+.error-msg{font-size:.75rem;color:var(--red);font-weight:500;display:none}
+.error-msg.show{display:block}
+textarea{resize:vertical;min-height:90px}
+
+/* CHECK GRID */
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.check-item{display:flex;align-items:center;gap:10px;background:#fafbfc;border:2px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;cursor:pointer;transition:all var(--tr);user-select:none}
+.check-item:hover,.check-item.selected{border-color:var(--blue);background:var(--blue-light)}
+.check-item input[type="checkbox"]{display:none}
+.check-box{width:20px;height:20px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--tr)}
+.check-item.selected .check-box{background:var(--blue);border-color:var(--blue)}
+.check-box svg{width:11px;height:11px;fill:#fff;display:none}
+.check-item.selected .check-box svg{display:block}
+.check-label{font-size:.85rem;font-weight:600;color:var(--text);line-height:1.2}
+.check-icon{font-size:1rem}
+
+/* DYNAMIC EXTRAS */
+.dynamic-extra{margin-top:12px;padding:14px;background:var(--blue-light);border-radius:var(--radius-sm);border-inline-start:3px solid var(--blue);animation:fadeUp .22s ease}
+.dynamic-extra-title{font-size:.75rem;font-weight:700;color:var(--blue);margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em}
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tag{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;font-size:.78rem;font-weight:600;padding:5px 10px;border-radius:20px;cursor:pointer;transition:opacity var(--tr)}
+.tag:hover{opacity:.85}
+.tag-x{font-size:.85rem;line-height:1}
+.tag-input-row{display:flex;gap:8px}
+.tag-input-row input{flex:1;padding:10px 12px;font-size:.88rem}
+.btn-add-tag{background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 16px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:var(--font-body);white-space:nowrap;transition:background var(--tr)}
+.btn-add-tag:hover{background:var(--blue-dark)}
+.size-chips{display:flex;flex-wrap:wrap;gap:8px}
+.size-chip{display:flex;align-items:center;gap:6px;border:2px solid var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:.82rem;font-weight:700;font-family:var(--font-head);color:var(--muted);transition:all var(--tr);background:#fff}
+.size-chip input{display:none}
+.size-chip.selected{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+
+/* ══ ADVANCED TOGGLE BUTTON ══ */
+.adv-toggle-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;margin-top:18px;padding:14px 18px;
+  background:linear-gradient(135deg,var(--purple-light),#ede9fe);
+  border:2px dashed var(--purple-border);border-radius:var(--radius-sm);
+  cursor:pointer;transition:all var(--tr);
+}
+.adv-toggle-btn:hover{background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-color:#a78bfa;transform:translateY(-1px)}
+.adv-toggle-btn.open{background:linear-gradient(135deg,var(--purple),#a855f7);border:2px solid transparent}
+.adv-toggle-left{display:flex;align-items:center;gap:10px}
+.adv-toggle-icon-main{font-size:1.2rem}
+.adv-toggle-texts{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.adv-toggle-title{font-size:.88rem;font-weight:700;font-family:var(--font-head);color:var(--purple);letter-spacing:.01em;transition:color var(--tr)}
+.adv-toggle-btn.open .adv-toggle-title{color:#fff}
+.adv-toggle-sub{font-size:.68rem;color:var(--purple);opacity:.75;transition:color var(--tr)}
+.adv-toggle-btn.open .adv-toggle-sub{color:rgba(255,255,255,.8);opacity:1}
+.adv-chevron{font-size:.75rem;color:var(--purple);transition:transform var(--tr),color var(--tr)}
+.adv-toggle-btn.open .adv-chevron{transform:rotate(180deg);color:#fff}
+
+/* ══ ADVANCED PANEL ══ */
+.adv-panel{overflow:hidden;max-height:0;transition:max-height .5s cubic-bezier(.4,0,.2,1),opacity .35s ease;opacity:0;margin-top:0}
+.adv-panel.open{max-height:9999px;opacity:1;margin-top:12px}
+
+/* ADV TABS */
+.adv-tabs{display:flex;gap:8px;margin-bottom:14px}
+.adv-tab{flex:1;padding:11px 8px;border:2px solid var(--border);border-radius:var(--radius-sm);background:#fafbfc;font-size:.8rem;font-weight:700;font-family:var(--font-head);color:var(--muted);cursor:pointer;transition:all var(--tr);display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2}
+.adv-tab .tab-icon{font-size:1.3rem}
+.adv-tab.active{border-color:var(--purple);background:var(--purple-light);color:var(--purple)}
+.adv-tab-content{display:none}
+.adv-tab-content.active{display:block;animation:fadeUp .25s ease}
+
+/* CUSTOM QUESTIONS LIST */
+.cq-empty{text-align:center;color:var(--muted);font-size:.8rem;padding:16px 0;opacity:.7}
+.cq-list{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+.cq-item{background:#fafbfc;border:2px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;animation:fadeUp .2s ease}
+.cq-item-head{display:flex;align-items:center;justify-content:space-between}
+.cq-item-left{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.cq-type-badge{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);background:var(--purple-light);padding:3px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.cq-item-label{font-size:.84rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cq-remove{background:none;border:none;color:var(--red);font-size:1rem;cursor:pointer;padding:2px 6px;line-height:1;opacity:.6;transition:opacity var(--tr);flex-shrink:0}
+.cq-remove:hover{opacity:1}
+.cq-item-opts{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.cq-opt-chip{background:var(--blue-light);color:var(--blue);font-size:.68rem;font-weight:600;padding:3px 8px;border-radius:10px}
+
+/* CQ BUILDER */
+.cq-builder{background:var(--purple-light);border:2px solid var(--purple-border);border-radius:var(--radius-sm);padding:14px}
+.cq-builder-title{font-size:.75rem;font-weight:700;color:var(--purple);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.cq-field-sm{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.cq-field-sm label{font-size:.75rem;font-weight:600;color:var(--purple)}
+.cq-field-sm input,.cq-field-sm select{font-size:.88rem;padding:10px 13px}
+.cq-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:11px}
+.cq-type-btn{padding:10px 6px;border:2px solid var(--purple-border);border-radius:9px;background:#fff;font-size:.75rem;font-weight:700;font-family:var(--font-body);color:var(--purple);cursor:pointer;transition:all var(--tr);display:flex;flex-direction:column;align-items:center;gap:4px;line-height:1.2}
+.cq-type-btn .t-icon{font-size:1.1rem}
+.cq-type-btn.selected,.cq-type-btn:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+.cq-options-area{margin-top:8px;padding-top:8px;border-top:1.5px dashed var(--purple-border)}
+.cq-options-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px;min-height:10px}
+.cq-opt-tag{display:inline-flex;align-items:center;gap:4px;background:var(--purple);color:#fff;font-size:.75rem;font-weight:600;padding:4px 10px;border-radius:15px}
+.cq-opt-tag-x{cursor:pointer;font-size:.8rem;opacity:.8}
+.cq-opt-tag-x:hover{opacity:1}
+.btn-add-cq{width:100%;margin-top:12px;padding:12px;background:linear-gradient(135deg,var(--purple),#a855f7);color:#fff;border:none;border-radius:var(--radius-sm);font-size:.9rem;font-weight:700;font-family:var(--font-head);cursor:pointer;transition:opacity var(--tr);letter-spacing:.02em;box-shadow:0 3px 12px rgba(124,58,237,.25)}
+.btn-add-cq:hover{opacity:.88}
+
+/* PIXELS */
+.pixel-section{display:flex;flex-direction:column;gap:13px}
+.pixel-field{display:flex;flex-direction:column;gap:5px}
+.pixel-platform-label{display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:1px}
+.pixel-badge{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:20px}
+.badge-fb{background:#e8f0fe;color:#1877f2}
+.badge-tt{background:#f0f0f0;color:#111}
+.badge-li{background:#e8f4fd;color:#0a66c2}
+.badge-ga{background:#fce8e6;color:#ea4335}
+.badge-gtm{background:#fef3e2;color:#e37400}
+.pixel-input-wrap{position:relative}
+.pixel-input-wrap input{padding-inline-start:36px;font-family:monospace;font-size:.85rem;letter-spacing:.02em}
+.pixel-icon{position:absolute;inset-inline-start:11px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none}
+.pixel-hint{font-size:.67rem;color:var(--muted);line-height:1.4}
+
+/* PREVIEW */
+.preview-wrap{display:flex;justify-content:center}
+.phone-frame{width:290px;background:#1a1a2e;border-radius:38px;padding:14px;box-shadow:0 12px 48px rgba(0,0,0,.28),0 0 0 2px #2a2a40}
+.phone-notch{width:80px;height:22px;background:#1a1a2e;border-radius:0 0 18px 18px;margin:0 auto 10px}
+.phone-screen{background:#f0f4fb;border-radius:24px;overflow:hidden;min-height:500px}
+.preview-page{padding:18px 16px;font-family:var(--font-body)}
+.preview-header{background:linear-gradient(135deg,var(--blue),#4f86f7);margin:-18px -16px 16px;padding:20px 16px;text-align:center}
+.preview-header h2{font-family:var(--font-head);font-size:1rem;color:#fff;font-weight:800;margin-bottom:4px}
+.preview-header p{font-size:.72rem;color:rgba(255,255,255,.85);line-height:1.4}
+.preview-form-field{margin-bottom:12px}
+.preview-form-field label{display:block;font-size:.7rem;font-weight:600;color:#374151;margin-bottom:4px}
+.preview-input-box{background:#fff;border:1.5px solid #d1d5db;border-radius:8px;padding:9px 12px;font-size:.75rem;color:#9ca3af;width:100%}
+.preview-select-box{background:#fff;border:1.5px solid #d1d5db;border-radius:8px;padding:9px 12px;font-size:.75rem;color:#9ca3af;width:100%;display:flex;align-items:center;justify-content:space-between}
+.preview-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.preview-chip{background:var(--blue-light);color:var(--blue);font-size:.65rem;font-weight:600;padding:3px 8px;border-radius:10px;border:1.5px solid rgba(24,119,242,.25)}
+.preview-submit{width:100%;background:linear-gradient(135deg,var(--blue),#4f86f7);color:#fff;border:none;border-radius:10px;padding:12px;font-size:.82rem;font-weight:700;font-family:var(--font-head);margin-top:4px;cursor:pointer;box-shadow:0 4px 14px rgba(24,119,242,.3)}
+.preview-empty{text-align:center;color:var(--muted);font-size:.82rem;padding:30px 0;line-height:1.6}
+
+/* RESULT */
+.result-section{display:flex;flex-direction:column;gap:14px}
+.result-item{background:#fafbfc;border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px}
+.result-item-title{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.result-link{font-size:.88rem;color:var(--blue);font-weight:600;word-break:break-all;text-decoration:none}
+.result-link:hover{text-decoration:underline}
+.json-box{background:#0f172a;color:#7dd3fc;border-radius:var(--radius-sm);padding:14px;font-size:.72rem;font-family:'Courier New',monospace;overflow-x:auto;max-height:200px;overflow-y:auto;white-space:pre;line-height:1.6;direction:ltr;text-align:left}
+.copy-btn{display:flex;align-items:center;gap:6px;background:var(--blue-light);color:var(--blue);border:none;border-radius:8px;padding:8px 14px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:var(--font-body);margin-top:8px;transition:background var(--tr)}
+.copy-btn:hover{background:#d3e5fb}
+.success-banner{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #86efac;border-radius:var(--radius-sm);padding:16px;display:flex;align-items:center;gap:12px}
+.success-icon{width:38px;height:38px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
+.success-text h3{font-family:var(--font-head);font-size:.95rem;color:#15803d;font-weight:700}
+.success-text p{font-size:.78rem;color:#16a34a;margin-top:2px}
+
+/* NAV */
+.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:var(--card);border-top:1px solid var(--border);padding:12px 20px;display:flex;gap:10px;z-index:99;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.btn{flex:1;padding:14px 20px;border-radius:var(--radius-sm);font-size:.92rem;font-weight:700;font-family:var(--font-head);border:none;cursor:pointer;transition:all var(--tr);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-back{background:var(--border);color:var(--muted);flex:.6}
+.btn-back:hover{background:#d4d8e0;color:var(--text)}
+.btn-next{background:linear-gradient(135deg,var(--blue),#4f86f7);color:#fff;box-shadow:0 4px 16px var(--blue-glow)}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--blue-glow)}
+.btn-generate{background:linear-gradient(135deg,var(--purple),#a855f7);color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.25)}
+.btn-generate:hover{opacity:.9;transform:translateY(-1px)}
+
+/* UTILS */
+.hidden{display:none!important}
+.step-content{display:none}
+.step-content.active{display:block}
+.mt-12{margin-top:12px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+@media(min-width:480px){.main{padding:24px 20px 100px}.card{padding:28px 24px}}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-left">
+    <div class="logo">
+      <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg></div>
+      FormCraft
+    </div>
+    <div class="step-badge" id="stepBadge"></div>
+  </div>
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('ar')">ع</button>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="step-indicators" id="stepIndicators" style="--progress-width:0%">
+    <div class="step-dot active"><div class="step-dot-circle">1</div><div class="step-dot-label" id="dl1"></div></div>
+    <div class="step-dot">      <div class="step-dot-circle">2</div><div class="step-dot-label" id="dl2"></div></div>
+    <div class="step-dot">      <div class="step-dot-circle">3</div><div class="step-dot-label" id="dl3"></div></div>
+    <div class="step-dot">      <div class="step-dot-circle">4</div><div class="step-dot-label" id="dl4"></div></div>
+    <div class="step-dot">      <div class="step-dot-circle">5</div><div class="step-dot-label" id="dl5"></div></div>
+  </div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressBar" style="width:10%"></div></div>
+</div>
+
+<main class="main">
+
+  <!-- STEP 1 -->
+  <div class="step-content active" id="step1">
+    <div class="card">
+      <div class="card-title" id="s1title"></div>
+      <div class="card-sub" id="s1sub"></div>
+      <div class="field"><label id="lbPageName"></label><input type="text" id="pageName"><span class="error-msg" id="pageNameErr"></span></div>
+      <div class="field"><label id="lbWhatsapp"></label><input type="tel" id="whatsapp"><span class="error-msg" id="whatsappErr"></span></div>
+      <div class="field"><label>Email <span class="label-opt" id="optLabel1"></span></label><input type="email" id="email"><span class="error-msg" id="emailErr"></span></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-content" id="step2">
+    <div class="card">
+      <div class="card-title" id="s2title"></div>
+      <div class="card-sub" id="s2sub"></div>
+      <div class="field"><label id="lbAdTitle"></label><input type="text" id="adTitle"></div>
+      <div class="field"><label id="lbAdDesc"></label><textarea id="adDesc"></textarea><span class="error-msg" id="adDescErr"></span></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-content" id="step3">
+    <div class="card">
+      <div class="card-title" id="s3title"></div>
+      <div class="card-sub" id="s3sub"></div>
+
+      <!-- Standard fields -->
+      <div class="check-grid" id="checkGrid"></div>
+      <div id="dynamicExtras"></div>
+      <span class="error-msg mt-12" id="fieldsErr"></span>
+
+      <!-- ✨ ADVANCED TOGGLE -->
+      <button class="adv-toggle-btn" id="advToggleBtn" onclick="toggleAdvanced()">
+        <div class="adv-toggle-left">
+          <span class="adv-toggle-icon-main">⚙️</span>
+          <div class="adv-toggle-texts">
+            <span class="adv-toggle-title" id="advTitleLabel">Paramètres avancés</span>
+            <span class="adv-toggle-sub" id="advSubLabel">Questions & Pixels de tracking</span>
+          </div>
+        </div>
+        <span class="adv-chevron" id="advChevron">▼</span>
+      </button>
+
+      <!-- ADVANCED PANEL -->
+      <div class="adv-panel" id="advPanel">
+
+        <!-- TABS -->
+        <div class="adv-tabs">
+          <button class="adv-tab active" id="tabQuestions" onclick="switchAdvTab('questions')">
+            <span class="tab-icon">❓</span>
+            <span id="tabQLabel">Questions</span>
+          </button>
+          <button class="adv-tab" id="tabPixels" onclick="switchAdvTab('pixels')">
+            <span class="tab-icon">🎯</span>
+            <span id="tabPLabel">Pixels</span>
+          </button>
+        </div>
+
+        <!-- TAB: CUSTOM QUESTIONS -->
+        <div class="adv-tab-content active" id="tabContentQuestions">
+          <div class="cq-list" id="cqList">
+            <div class="cq-empty" id="cqEmpty">Aucune question ajoutée</div>
+          </div>
+          <div class="cq-builder">
+            <div class="cq-builder-title" id="cqBuilderTitle">➕ Nouvelle question</div>
+            <div class="cq-field-sm">
+              <label id="cqLabelLb">Libellé de la question</label>
+              <input type="text" id="cqLabelInput" placeholder="ex: Quelle est votre wilaya ?">
+            </div>
+            <div class="cq-type-grid">
+              <button class="cq-type-btn selected" data-type="text" onclick="selectCqType('text',this)"><span class="t-icon">🔤</span><span>Texte</span></button>
+              <button class="cq-type-btn" data-type="date" onclick="selectCqType('date',this)"><span class="t-icon">📅</span><span>Date</span></button>
+              <button class="cq-type-btn" data-type="select" onclick="selectCqType('select',this)"><span class="t-icon">📋</span><span>Sélection</span></button>
+            </div>
+            <div class="cq-options-area hidden" id="cqOptionsArea">
+              <div class="cq-options-tags" id="cqOptionsTags"></div>
+              <div class="tag-input-row">
+                <input type="text" id="cqOptionInput" placeholder="ex: Tunis, Sfax..." style="font-size:.85rem;padding:9px 12px">
+                <button class="btn-add-tag" onclick="addCqOption()" style="background:var(--purple)">+</button>
+              </div>
+            </div>
+            <button class="btn-add-cq" onclick="addCustomQuestion()">✅ <span id="cqAddBtnLabel">Ajouter la question</span></button>
+          </div>
+        </div>
+
+        <!-- TAB: PIXELS -->
+        <div class="adv-tab-content" id="tabContentPixels">
+          <div class="pixel-section">
+
+            <div class="pixel-field">
+              <div class="pixel-platform-label"><span class="pixel-badge badge-fb">📘 Facebook</span> Pixel ID</div>
+              <div class="pixel-input-wrap"><span class="pixel-icon">📘</span><input type="text" id="pixelFb" placeholder="ex: 1234567890123456" inputmode="numeric"></div>
+              <span class="pixel-hint" id="hintFb">Facebook Events Manager → Pixels</span>
+            </div>
+
+            <div class="pixel-field">
+              <div class="pixel-platform-label"><span class="pixel-badge badge-tt">🎵 TikTok</span> Pixel ID</div>
+              <div class="pixel-input-wrap"><span class="pixel-icon">🎵</span><input type="text" id="pixelTt" placeholder="ex: CXXXXXXXXXXXXXXXXX"></div>
+              <span class="pixel-hint" id="hintTt">TikTok Ads Manager → Assets → Events</span>
+            </div>
+
+            <div class="pixel-field">
+              <div class="pixel-platform-label"><span class="pixel-badge badge-li">🔵 LinkedIn</span> Insight Tag ID</div>
+              <div class="pixel-input-wrap"><span class="pixel-icon">🔵</span><input type="text" id="pixelLi" placeholder="ex: 1234567" inputmode="numeric"></div>
+              <span class="pixel-hint" id="hintLi">LinkedIn Campaign Manager → Insight Tag</span>
+            </div>
+
+            <div class="pixel-field">
+              <div class="pixel-platform-label"><span class="pixel-badge badge-ga">📊 Google Analytics</span> Measurement ID</div>
+              <div class="pixel-input-wrap"><span class="pixel-icon">📊</span><input type="text" id="pixelGa" placeholder="ex: G-XXXXXXXXXX"></div>
+              <span class="pixel-hint" id="hintGa">Google Analytics → Admin → Data Streams</span>
+            </div>
+
+            <div class="pixel-field">
+              <div class="pixel-platform-label"><span class="pixel-badge badge-gtm">🏷️ Google Tag Manager</span> Container ID</div>
+              <div class="pixel-input-wrap"><span class="pixel-icon">🏷️</span><input type="text" id="pixelGtm" placeholder="ex: GTM-XXXXXXX"></div>
+              <span class="pixel-hint" id="hintGtm">Google Tag Manager → Admin → Container Settings</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /advPanel -->
+    </div><!-- /card -->
+  </div>
+
+  <!-- STEP 4 : PREVIEW -->
+  <div class="step-content" id="step4">
+    <div class="card" style="padding:20px 16px">
+      <div class="card-title" id="s4title"></div>
+      <div class="card-sub" id="s4sub"></div>
+    </div>
+    <div class="preview-wrap">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen"><div class="preview-page" id="previewPage"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 : GENERATE -->
+  <div class="step-content" id="step5">
+    <div class="card">
+      <div class="card-title" id="s5title"></div>
+      <div class="card-sub" id="s5sub"></div>
+      <div class="success-banner">
+        <div class="success-icon">✅</div>
+        <div class="success-text"><h3 id="s5success"></h3><p id="s5successSub"></p></div>
+      </div>
+      <div class="divider"></div>
+      <div class="result-section">
+        <div class="result-item">
+          <div class="result-item-title" id="s5link"></div>
+          <a class="result-link" id="generatedLink" href="#" target="_blank"></a>
+          <button class="copy-btn" id="copyLinkBtn" onclick="copyLink()"></button>
+        </div>
+        <div class="result-item">
+          <div class="result-item-title" id="s5json"></div>
+          <div class="json-box" id="jsonOutput"></div>
+          <button class="copy-btn" id="copyJsonBtn" onclick="copyJson()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="nav-bar">
+  <button class="btn btn-back hidden" id="btnBack"></button>
+  <button class="btn btn-next" id="btnNext"></button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   TRANSLATIONS
+═══════════════════════════════════════ */
+const T={
+  en:{
+    dots:['Page','Ad','Fields','Preview','Generate'],
+    badge:(c,t)=>`Step ${c} of ${t}`,
+    s1title:'📋 Page Information',s1sub:'Set up your landing page basics.',
+    lbPageName:'Page Name',phPageName:'e.g. Summer Collection 2025',
+    lbWhatsapp:'WhatsApp Number',phWhatsapp:'e.g. +216 XX XXX XXX',
+    phEmail:'e.g. hello@mybrand.com',optional:'(optional)',
+    errPageName:'Please enter a page name.',errWhatsapp:'Please enter a WhatsApp number.',errEmail:'Please enter a valid email.',
+    s2title:'📣 Advertisement Content',s2sub:'Craft your headline and pitch.',
+    lbAdTitle:'Ad Title',phAdTitle:'e.g. Exclusive Summer Deals — Up to 60% Off!',
+    lbAdDesc:'Description',phAdDesc:'e.g. Fill in the form to reserve your order. Fast delivery!',
+    errAdDesc:'Description is required.',
+    s3title:'🛠️ Form Fields',s3sub:'Select the fields to display on your form.',
+    errFields:'Please select at least one field.',
+    advTitle:'⚙️ Advanced Settings',advSub:'Custom Questions & Tracking Pixels',
+    tabQ:'Questions',tabP:'Pixels',
+    cqBuilder:'➕ New Question',cqLabelLb:'Question label',cqLabelPh:'e.g. What is your city?',
+    cqTypeText:'Text',cqTypeDate:'Date',cqTypeSelect:'Select',
+    cqAddBtn:'Add Question',cqOptPh:'Add option...',cqEmpty:'No questions added yet',
+    s4title:'👁️ Live Preview',s4sub:'See how your form looks on mobile.',
+    s5title:'🚀 Your Form is Ready!',s5sub:"Here's your generated link and config.",
+    s5success:'Form Generated!',s5successSub:'Your landing page is ready to share.',
+    s5link:'🔗 Your Unique Link',s5json:'📦 JSON Configuration',
+    copyLink:'📋 Copy Link',copyJson:'📋 Copy JSON',
+    btnBack:'Back',btnNext:'Next →',btnGenerate:'Generate 🚀',btnDone:'🎉 Done!',
+    fields:[
+      {key:'name',label:'Name',icon:'👤'},{key:'phone',label:'Phone',icon:'📱'},
+      {key:'email',label:'Email',icon:'✉️'},{key:'color',label:'Color',icon:'🎨'},
+      {key:'size',label:'Size',icon:'👕'},{key:'pointure',label:'Pointure',icon:'👟'},
+      {key:'region',label:'Region',icon:'📍'},{key:'address',label:'Address',icon:'🏠'},
+    ],
+    extColor:'🎨 Colors',extColorPh:'e.g. Red',extSize:'👕 Sizes',
+    extPointure:'👟 Shoe Sizes',extPointurePh:'e.g. 40',extRegion:'📍 Regions',extRegionPh:'e.g. Tunis',
+    addBtn:'Add +',
+    prevEmpty:'No fields selected.\nGo back and choose fields.',
+    prevFL:{name:'Full Name',phone:'Phone Number',email:'Email',color:'Color',size:'Size',pointure:'Pointure',region:'Region',address:'Delivery Address'},
+    prevChoose:f=>`Choose ${f}`,
+    prevPh:{name:'Your name...',phone:'+216 XX XXX XXX',email:'your@email.com',address:'Street, City, Zip...'},
+    prevSubmit:'✅ Submit Order',
+    defColor:['Red','Blue','White'],defPt:['40','41','42','43'],defReg:['Tunis','Sfax','Sousse'],
+    copied:'Copied!',
+    hintFb:'Facebook Events Manager → Pixels',hintTt:'TikTok Ads Manager → Assets → Events',
+    hintLi:'LinkedIn Campaign Manager → Insight Tag',hintGa:'Google Analytics → Admin → Data Streams',
+    hintGtm:'Google Tag Manager → Admin → Container Settings',
+  },
+  fr:{
+    dots:['Page','Pub','Champs','Aperçu','Générer'],
+    badge:(c,t)=>`Étape ${c} / ${t}`,
+    s1title:'📋 Informations de la Page',s1sub:'Configurez les bases de votre page.',
+    lbPageName:'Nom de la Page',phPageName:'ex. Collection Été 2025',
+    lbWhatsapp:'Numéro WhatsApp',phWhatsapp:'ex. +216 XX XXX XXX',
+    phEmail:'ex. bonjour@maboutique.com',optional:'(optionnel)',
+    errPageName:'Veuillez saisir un nom de page.',errWhatsapp:'Veuillez saisir un numéro WhatsApp.',errEmail:'Veuillez saisir un email valide.',
+    s2title:'📣 Contenu Publicitaire',s2sub:'Rédigez votre accroche et description.',
+    lbAdTitle:'Titre de la Pub',phAdTitle:"ex. Offres Exclusives Été — Jusqu'à 60% de Réduction!",
+    lbAdDesc:'Description',phAdDesc:'ex. Remplissez le formulaire pour réserver votre commande!',
+    errAdDesc:'La description est obligatoire.',
+    s3title:'🛠️ Champs du Formulaire',s3sub:'Sélectionnez les champs à afficher sur votre formulaire.',
+    errFields:'Veuillez sélectionner au moins un champ.',
+    advTitle:'⚙️ Paramètres avancés',advSub:'Questions personnalisées & Pixels de tracking',
+    tabQ:'Questions',tabP:'Pixels',
+    cqBuilder:'➕ Nouvelle question',cqLabelLb:'Libellé de la question',cqLabelPh:'ex. Quelle est votre wilaya ?',
+    cqTypeText:'Texte',cqTypeDate:'Date',cqTypeSelect:'Sélection',
+    cqAddBtn:'Ajouter la question',cqOptPh:'ex. Tunis, Sfax...',cqEmpty:'Aucune question ajoutée',
+    s4title:'👁️ Aperçu en Temps Réel',s4sub:'Voir votre formulaire sur mobile.',
+    s5title:'🚀 Votre Formulaire est Prêt!',s5sub:'Voici votre lien et configuration générés.',
+    s5success:'Formulaire Généré!',s5successSub:'Votre page est prête à partager.',
+    s5link:'🔗 Votre Lien Unique',s5json:'📦 Configuration JSON',
+    copyLink:'📋 Copier le Lien',copyJson:'📋 Copier le JSON',
+    btnBack:'← Retour',btnNext:'Suivant →',btnGenerate:'Générer 🚀',btnDone:'🎉 Terminé!',
+    fields:[
+      {key:'name',label:'Nom',icon:'👤'},{key:'phone',label:'Téléphone',icon:'📱'},
+      {key:'email',label:'Email',icon:'✉️'},{key:'color',label:'Couleur',icon:'🎨'},
+      {key:'size',label:'Taille',icon:'👕'},{key:'pointure',label:'Pointure',icon:'👟'},
+      {key:'region',label:'Région',icon:'📍'},{key:'address',label:'Adresse',icon:'🏠'},
+    ],
+    extColor:'🎨 Couleurs',extColorPh:'ex. Rouge',extSize:'👕 Tailles',
+    extPointure:'👟 Pointures',extPointurePh:'ex. 40',extRegion:'📍 Régions',extRegionPh:'ex. Tunis',
+    addBtn:'Ajouter +',
+    prevEmpty:'Aucun champ sélectionné.\nRetournez et choisissez des champs.',
+    prevFL:{name:'Nom Complet',phone:'Numéro de Téléphone',email:'Email',color:'Couleur',size:'Taille',pointure:'Pointure',region:'Région',address:'Adresse de Livraison'},
+    prevChoose:f=>`Choisir ${f}`,
+    prevPh:{name:'Votre nom...',phone:'+216 XX XXX XXX',email:'votre@email.com',address:'Rue, Ville, Code postal...'},
+    prevSubmit:'✅ Passer la Commande',
+    defColor:['Rouge','Bleu','Blanc'],defPt:['40','41','42','43'],defReg:['Tunis','Sfax','Sousse'],
+    copied:'Copié !',
+    hintFb:'Facebook Events Manager → Pixels',hintTt:'TikTok Ads Manager → Assets → Events',
+    hintLi:'LinkedIn Campaign Manager → Insight Tag',hintGa:'Google Analytics → Admin → Data Streams',
+    hintGtm:'Google Tag Manager → Admin → Paramètres du conteneur',
+  },
+  ar:{
+    dots:['الصفحة','الإعلان','الحقول','معاينة','توليد'],
+    badge:(c,t)=>`الخطوة ${c} من ${t}`,
+    s1title:'📋 معلومات الصفحة',s1sub:'أدخل المعلومات الأساسية لصفحتك.',
+    lbPageName:'اسم الصفحة',phPageName:'مثال: مجموعة الصيف 2025',
+    lbWhatsapp:'رقم واتساب',phWhatsapp:'مثال: +216 XX XXX XXX',
+    phEmail:'مثال: مرحبا@متجري.com',optional:'(اختياري)',
+    errPageName:'يرجى إدخال اسم الصفحة.',errWhatsapp:'يرجى إدخال رقم واتساب.',errEmail:'يرجى إدخال بريد إلكتروني صحيح.',
+    s2title:'📣 محتوى الإعلان',s2sub:'اكتب عنوانك ووصف عرضك.',
+    lbAdTitle:'عنوان الإعلان',phAdTitle:'مثال: عروض الصيف الحصرية — خصم حتى 60%!',
+    lbAdDesc:'الوصف',phAdDesc:'مثال: أملأ النموذج لحجز طلبك. توصيل سريع!',
+    errAdDesc:'الوصف مطلوب.',
+    s3title:'🛠️ حقول النموذج',s3sub:'اختر الحقول التي تريد عرضها.',
+    errFields:'يرجى تحديد حقل واحد على الأقل.',
+    advTitle:'⚙️ الإعدادات المتقدمة',advSub:'أسئلة مخصصة وبيكسلات التتبع',
+    tabQ:'أسئلة',tabP:'بيكسل',
+    cqBuilder:'➕ سؤال جديد',cqLabelLb:'نص السؤال',cqLabelPh:'مثال: ما هي ولايتك؟',
+    cqTypeText:'نص',cqTypeDate:'تاريخ',cqTypeSelect:'اختيار',
+    cqAddBtn:'إضافة السؤال',cqOptPh:'مثال: تونس، صفاقس...',cqEmpty:'لا توجد أسئلة مضافة',
+    s4title:'👁️ معاينة مباشرة',s4sub:'انظر كيف يبدو نموذجك على الهاتف.',
+    s5title:'🚀 نموذجك جاهز!',s5sub:'إليك الرابط الفريد والإعداد المُنشأ.',
+    s5success:'تم إنشاء النموذج!',s5successSub:'صفحتك جاهزة للمشاركة.',
+    s5link:'🔗 رابطك الفريد',s5json:'📦 إعداد JSON',
+    copyLink:'📋 نسخ الرابط',copyJson:'📋 نسخ JSON',
+    btnBack:'رجوع ←',btnNext:'→ التالي',btnGenerate:'توليد 🚀',btnDone:'🎉 تم!',
+    fields:[
+      {key:'name',label:'الاسم',icon:'👤'},{key:'phone',label:'الهاتف',icon:'📱'},
+      {key:'email',label:'البريد',icon:'✉️'},{key:'color',label:'اللون',icon:'🎨'},
+      {key:'size',label:'المقاس',icon:'👕'},{key:'pointure',label:'رقم القياس',icon:'👟'},
+      {key:'region',label:'المنطقة',icon:'📍'},{key:'address',label:'العنوان',icon:'🏠'},
+    ],
+    extColor:'🎨 الألوان',extColorPh:'مثال: أحمر',extSize:'👕 المقاسات',
+    extPointure:'👟 أرقام الأحذية',extPointurePh:'مثال: 40',extRegion:'📍 المناطق',extRegionPh:'مثال: تونس',
+    addBtn:'إضافة +',
+    prevEmpty:'لم يتم تحديد أي حقل.\nارجع واختر الحقول.',
+    prevFL:{name:'الاسم الكامل',phone:'رقم الهاتف',email:'البريد الإلكتروني',color:'اللون',size:'المقاس',pointure:'رقم القياس',region:'المنطقة',address:'عنوان التوصيل'},
+    prevChoose:f=>`اختر ${f}`,
+    prevPh:{name:'اسمك...',phone:'+216 XX XXX XXX',email:'بريدك@هنا.com',address:'الشارع، المدينة...'},
+    prevSubmit:'✅ إرسال الطلب',
+    defColor:['أحمر','أزرق','أبيض'],defPt:['40','41','42','43'],defReg:['تونس','صفاقس','سوسة'],
+    copied:'تم النسخ!',
+    hintFb:'مدير الأحداث على فيسبوك → البيكسل',hintTt:'مدير إعلانات TikTok → الأصول → الأحداث',
+    hintLi:'مدير حملات لينكد إن → Insight Tag',hintGa:'Google Analytics → الإعداد → تدفقات البيانات',
+    hintGtm:'Google Tag Manager → الإعداد → إعدادات الحاوية',
+  }
+};
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let step=1, lang='en', advOpen=false, advActiveTab='questions';
+const TOTAL=5;
+const SIZES=['XS','S','M','L','XL','XXL'];
+const state={
+  pageName:'',whatsapp:'',email:'',adTitle:'',adDesc:'',
+  fields:{},colorTags:[],sizeSel:[],pointureTags:[],regionTags:[],
+  customQuestions:[],cqTempOptions:[],cqTempType:'text',
+  pixels:{fb:'',tt:'',li:'',ga:'',gtm:''}
+};
+const tx=k=>T[lang][k]!==undefined?T[lang][k]:(T.en[k]||k);
+
+/* ═══════════════════════════════════════
+   LANG
+═══════════════════════════════════════ */
+function setLang(l){
+  lang=l;
+  document.documentElement.lang=l;
+  document.documentElement.dir=l==='ar'?'rtl':'ltr';
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    const m={en:'EN',fr:'FR',ar:'ع'};
+    b.classList.toggle('active',b.textContent.trim()===m[l]);
+  });
+  applyAll();
+  if(step===3){initCheckGrid();renderCqList();}
+  if(step===4) buildPreview();
+}
+
+/* ═══════════════════════════════════════
+   APPLY ALL LABELS
+═══════════════════════════════════════ */
+function applyAll(){
+  const L=T[lang];
+  L.dots.forEach((d,i)=>{const el=document.getElementById('dl'+(i+1));if(el)el.textContent=d;});
+  document.getElementById('stepBadge').textContent=L.badge(step,TOTAL);
+  // static
+  ['s1title','s1sub','s2title','s2sub','s3title','s3sub','s4title','s4sub','s5title','s5sub','s5success','s5successSub','s5link','s5json'].forEach(id=>{
+    const el=document.getElementById(id);if(el&&L[id]!==undefined)el.textContent=L[id];
+  });
+  // labels + placeholders
+  ['lbPageName','lbWhatsapp','lbAdTitle','lbAdDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=L[id]||'';});
+  document.getElementById('optLabel1').textContent=L.optional;
+  document.getElementById('pageName').placeholder=L.phPageName;
+  document.getElementById('whatsapp').placeholder=L.phWhatsapp;
+  document.getElementById('email').placeholder=L.phEmail;
+  document.getElementById('adTitle').placeholder=L.phAdTitle;
+  document.getElementById('adDesc').placeholder=L.phAdDesc;
+  // errors
+  const errMap={pageNameErr:'errPageName',whatsappErr:'errWhatsapp',emailErr:'errEmail',adDescErr:'errAdDesc',fieldsErr:'errFields'};
+  Object.entries(errMap).forEach(([id,k])=>{const el=document.getElementById(id);if(el&&L[k])el.textContent=L[k];});
+  // advanced button
+  const at=document.getElementById('advTitleLabel');if(at)at.textContent=L.advTitle||'⚙️ Advanced';
+  const as=document.getElementById('advSubLabel');if(as)as.textContent=L.advSub||'';
+  // adv tabs
+  const tq=document.getElementById('tabQLabel');if(tq)tq.textContent=L.tabQ;
+  const tp=document.getElementById('tabPLabel');if(tp)tp.textContent=L.tabP;
+  // cq builder
+  const cb=document.getElementById('cqBuilderTitle');if(cb)cb.textContent=L.cqBuilder;
+  const cl=document.getElementById('cqLabelLb');if(cl)cl.textContent=L.cqLabelLb;
+  const ci=document.getElementById('cqLabelInput');if(ci)ci.placeholder=L.cqLabelPh;
+  const oi=document.getElementById('cqOptionInput');if(oi)oi.placeholder=L.cqOptPh;
+  const ab=document.getElementById('cqAddBtnLabel');if(ab)ab.textContent=L.cqAddBtn;
+  // cq type btns
+  document.querySelectorAll('.cq-type-btn').forEach(btn=>{
+    const m={'text':L.cqTypeText,'date':L.cqTypeDate,'select':L.cqTypeSelect};
+    const spans=btn.querySelectorAll('span');if(spans[1])spans[1].textContent=m[btn.dataset.type]||btn.dataset.type;
+  });
+  // pixel hints
+  [['hintFb','hintFb'],['hintTt','hintTt'],['hintLi','hintLi'],['hintGa','hintGa'],['hintGtm','hintGtm']].forEach(([id,k])=>{
+    const el=document.getElementById(id);if(el&&L[k])el.textContent=L[k];
+  });
+  // cq empty
+  const ce=document.getElementById('cqEmpty');if(ce)ce.textContent=L.cqEmpty||'';
+  // copy btns
+  const clb=document.getElementById('copyLinkBtn');if(clb)clb.textContent=L.copyLink;
+  const cjb=document.getElementById('copyJsonBtn');if(cjb)cjb.textContent=L.copyJson;
+  // nav
+  const btnBack=document.getElementById('btnBack');
+  const btnNext=document.getElementById('btnNext');
+  btnBack.textContent=L.btnBack; btnBack.onclick=goBack;
+  if(step===TOTAL){btnNext.textContent=L.btnDone;btnNext.className='btn btn-generate';btnNext.onclick=()=>{};}
+  else if(step===TOTAL-1){btnNext.textContent=L.btnGenerate;btnNext.className='btn btn-next';btnNext.onclick=goNext;}
+  else{btnNext.textContent=L.btnNext;btnNext.className='btn btn-next';btnNext.onclick=goNext;}
+}
+
+/* ═══════════════════════════════════════
+   ADVANCED PANEL
+═══════════════════════════════════════ */
+function toggleAdvanced(){
+  advOpen=!advOpen;
+  document.getElementById('advPanel').classList.toggle('open',advOpen);
+  document.getElementById('advToggleBtn').classList.toggle('open',advOpen);
+  document.getElementById('advChevron').textContent=advOpen?'▲':'▼';
+}
+
+function switchAdvTab(tab){
+  advActiveTab=tab;
+  document.querySelectorAll('.adv-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.adv-tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab'+cap(tab)).classList.add('active');
+  document.getElementById('tabContent'+cap(tab)).classList.add('active');
+}
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+/* ═══════════════════════════════════════
+   CUSTOM QUESTIONS
+═══════════════════════════════════════ */
+function selectCqType(type,el){
+  state.cqTempType=type;
+  document.querySelectorAll('.cq-type-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('cqOptionsArea').classList.toggle('hidden',type!=='select');
+}
+
+function addCqOption(){
+  const inp=document.getElementById('cqOptionInput');
+  const val=inp.value.trim();
+  if(!val)return;
+  if(!state.cqTempOptions.includes(val))state.cqTempOptions.push(val);
+  inp.value='';inp.focus();
+  renderCqTempOptions();
+}
+
+function renderCqTempOptions(){
+  const wrap=document.getElementById('cqOptionsTags');if(!wrap)return;
+  wrap.innerHTML='';
+  state.cqTempOptions.forEach((o,i)=>{
+    const s=document.createElement('span');s.className='cq-opt-tag';
+    s.innerHTML=`${esc(o)} <span class="cq-opt-tag-x" onclick="rmCqOpt(${i})">×</span>`;
+    wrap.appendChild(s);
+  });
+}
+function rmCqOpt(i){state.cqTempOptions.splice(i,1);renderCqTempOptions();}
+
+function addCustomQuestion(){
+  const label=document.getElementById('cqLabelInput').value.trim();
+  const inp=document.getElementById('cqLabelInput');
+  if(!label){inp.style.borderColor='var(--red)';inp.focus();setTimeout(()=>inp.style.borderColor='',1500);return;}
+  if(state.cqTempType==='select'&&!state.cqTempOptions.length){document.getElementById('cqOptionInput').focus();return;}
+  state.customQuestions.push({label,type:state.cqTempType,options:[...state.cqTempOptions]});
+  inp.value='';
+  state.cqTempOptions=[];state.cqTempType='text';
+  document.querySelectorAll('.cq-type-btn').forEach(b=>b.classList.toggle('selected',b.dataset.type==='text'));
+  document.getElementById('cqOptionsArea').classList.add('hidden');
+  renderCqTempOptions();
+  renderCqList();
+}
+
+function removeCustomQuestion(i){state.customQuestions.splice(i,1);renderCqList();}
+
+function renderCqList(){
+  const list=document.getElementById('cqList');if(!list)return;
+  const ti={'text':'🔤','date':'📅','select':'📋'};
+  const L=T[lang];
+  // clear except cqEmpty div placeholder (we'll re-add it if needed)
+  list.innerHTML='';
+  if(!state.customQuestions.length){
+    const emp=document.createElement('div');emp.className='cq-empty';emp.id='cqEmpty';emp.textContent=L.cqEmpty||'No questions added yet';
+    list.appendChild(emp);return;
+  }
+  state.customQuestions.forEach((q,i)=>{
+    const div=document.createElement('div');div.className='cq-item';
+    div.innerHTML=`<div class="cq-item-head"><div class="cq-item-left"><span class="cq-type-badge">${ti[q.type]||'❓'} ${q.type}</span><span class="cq-item-label">${esc(q.label)}</span></div><button class="cq-remove" onclick="removeCustomQuestion(${i})" title="Supprimer">🗑️</button></div>${q.options.length?`<div class="cq-item-opts">${q.options.map(o=>`<span class="cq-opt-chip">${esc(o)}</span>`).join('')}</div>`:''}`;
+    list.appendChild(div);
+  });
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown',e=>{
+  if(e.target.id==='cqOptionInput'&&e.key==='Enter'){e.preventDefault();addCqOption();}
+});
+
+/* ═══════════════════════════════════════
+   SAVE PIXELS
+═══════════════════════════════════════ */
+function savePixels(){
+  ['fb','tt','li','ga','gtm'].forEach(k=>{
+    const el=document.getElementById('pixel'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(el)state.pixels[k]=el.value.trim();
+  });
+}
+
+/* ═══════════════════════════════════════
+   CHECK GRID
+═══════════════════════════════════════ */
+function initCheckGrid(){
+  const grid=document.getElementById('checkGrid');grid.innerHTML='';
+  T[lang].fields.forEach(opt=>{
+    const div=document.createElement('div');
+    div.className='check-item'+(state.fields[opt.key]?' selected':'');
+    div.innerHTML=`<div class="check-box"><svg viewBox="0 0 12 9"><path d="M1 4.5L4.5 8 11 1" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-icon">${opt.icon}</span><span class="check-label">${opt.label}</span>`;
+    div.addEventListener('click',()=>{state.fields[opt.key]=!state.fields[opt.key];div.classList.toggle('selected',state.fields[opt.key]);renderDynamicExtras();document.getElementById('fieldsErr').style.display='none';});
+    grid.appendChild(div);
+  });
+  renderDynamicExtras();
+}
+
+function renderDynamicExtras(){
+  const wrap=document.getElementById('dynamicExtras');wrap.innerHTML='';
+  if(state.fields.color)    wrap.appendChild(buildTagsExtra('color',   tx('extColor'),   tx('extColorPh'),   state.colorTags,   'colorTags'));
+  if(state.fields.size)     wrap.appendChild(buildSizeExtra());
+  if(state.fields.pointure) wrap.appendChild(buildTagsExtra('pointure',tx('extPointure'),tx('extPointurePh'),state.pointureTags,'pointureTags','number'));
+  if(state.fields.region)   wrap.appendChild(buildTagsExtra('region',  tx('extRegion'),  tx('extRegionPh'),  state.regionTags,  'regionTags'));
+}
+
+function buildTagsExtra(id,title,ph,arr,sk,itype='text'){
+  const div=document.createElement('div');div.className='dynamic-extra';
+  div.innerHTML=`<div class="dynamic-extra-title">${title}</div><div class="tags-wrap" id="tags_${id}"></div><div class="tag-input-row"><input type="${itype}" id="tagInput_${id}" placeholder="${ph}"/><button class="btn-add-tag" onclick="addTag('${id}','${sk}')">${tx('addBtn')}</button></div>`;
+  setTimeout(()=>renderTags(id,arr,sk),0);
+  div.querySelector('#tagInput_'+id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addTag(id,sk);}});
+  return div;
+}
+function renderTags(id,arr,sk){const w=document.getElementById('tags_'+id);if(!w)return;w.innerHTML='';arr.forEach((v,i)=>{const s=document.createElement('span');s.className='tag';s.innerHTML=`${esc(v)} <span class="tag-x" onclick="removeTag('${id}','${sk}',${i})">×</span>`;w.appendChild(s);});}
+function addTag(id,sk){const inp=document.getElementById('tagInput_'+id);const val=inp.value.trim();if(val&&!state[sk].includes(val)){state[sk].push(val);renderTags(id,state[sk],sk);}inp.value='';inp.focus();}
+function removeTag(id,sk,idx){state[sk].splice(idx,1);renderTags(id,state[sk],sk);}
+function buildSizeExtra(){const div=document.createElement('div');div.className='dynamic-extra';div.innerHTML=`<div class="dynamic-extra-title">${tx('extSize')}</div><div class="size-chips">${SIZES.map(s=>`<label class="size-chip ${state.sizeSel.includes(s)?'selected':''}" onclick="toggleSize('${s}',this)"><input type="checkbox">${s}</label>`).join('')}</div>`;return div;}
+function toggleSize(s,el){const i=state.sizeSel.indexOf(s);if(i>-1){state.sizeSel.splice(i,1);el.classList.remove('selected');}else{state.sizeSel.push(s);el.classList.add('selected');}}
+
+/* ═══════════════════════════════════════
+   PREVIEW
+═══════════════════════════════════════ */
+function buildPreview(){
+  const page=document.getElementById('previewPage');
+  const L=T[lang];
+  const chosen=L.fields.filter(f=>state.fields[f.key]).map(f=>f.key);
+  if(!chosen.length&&!state.customQuestions.length){page.innerHTML=`<div class="preview-empty">${L.prevEmpty.replace('\n','<br>')}</div>`;return;}
+  const title=state.adTitle||state.pageName||'Offer';
+  let html=`<div class="preview-header"><h2>${esc(title)}</h2>${state.adDesc?`<p>${esc(state.adDesc)}</p>`:''}</div>`;
+  const fl=L.prevFL;
+  chosen.forEach(key=>{
+    switch(key){
+      case 'name':    html+=pf(fl.name,   `<div class="preview-input-box">${L.prevPh.name}</div>`);break;
+      case 'phone':   html+=pf(fl.phone,  `<div class="preview-input-box">${L.prevPh.phone}</div>`);break;
+      case 'email':   html+=pf(fl.email,  `<div class="preview-input-box">${L.prevPh.email}</div>`);break;
+      case 'address': html+=pf(fl.address,`<div class="preview-input-box">${L.prevPh.address}</div>`);break;
+      case 'color':{const o=state.colorTags.length?state.colorTags:L.defColor;html+=pf(fl.color,`<div class="preview-select-box">${L.prevChoose(fl.color)}<span>▾</span></div><div class="preview-chips">${o.map(x=>`<span class="preview-chip">${esc(x)}</span>`).join('')}</div>`);break;}
+      case 'size':{const o=state.sizeSel.length?state.sizeSel:SIZES;html+=pf(fl.size,`<div class="preview-chips">${o.map(x=>`<span class="preview-chip">${x}</span>`).join('')}</div>`);break;}
+      case 'pointure':{const o=state.pointureTags.length?state.pointureTags:L.defPt;html+=pf(fl.pointure,`<div class="preview-select-box">${L.prevChoose(fl.pointure)}<span>▾</span></div><div class="preview-chips">${o.map(x=>`<span class="preview-chip">${esc(x)}</span>`).join('')}</div>`);break;}
+      case 'region':{const o=state.regionTags.length?state.regionTags:L.defReg;html+=pf(fl.region,`<div class="preview-select-box">${L.prevChoose(fl.region)}<span>▾</span></div><div class="preview-chips">${o.map(x=>`<span class="preview-chip">${esc(x)}</span>`).join('')}</div>`);break;}
+    }
+  });
+  const cqPh={text:'Tapez votre réponse...',date:'📅 JJ/MM/AAAA'};
+  state.customQuestions.forEach(q=>{
+    if(q.type==='text') html+=pf(esc(q.label),`<div class="preview-input-box">${cqPh.text}</div>`);
+    else if(q.type==='date') html+=pf(esc(q.label),`<div class="preview-input-box">${cqPh.date}</div>`);
+    else if(q.type==='select') html+=pf(esc(q.label),`<div class="preview-select-box">Choisir... <span>▾</span></div><div class="preview-chips">${q.options.map(o=>`<span class="preview-chip">${esc(o)}</span>`).join('')}</div>`);
+  });
+  html+=`<button class="preview-submit">${L.prevSubmit}</button>`;
+  page.innerHTML=html;
+}
+function pf(lbl,inner){return `<div class="preview-form-field"><label>${lbl}</label>${inner}</div>`;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ═══════════════════════════════════════
+   GENERATE
+═══════════════════════════════════════ */
+function generateOutput(){
+  savePixels();
+  const L=T[lang];
+  const slug=state.pageName.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')||'my-form';
+  const uid=Math.random().toString(36).substr(2,8);
+  const link=`https://formcraft.app/p/${slug}-${uid}`;
+  document.getElementById('generatedLink').href=link;
+  document.getElementById('generatedLink').textContent=link;
+  const px={};
+  if(state.pixels.fb)  px.facebook_pixel=state.pixels.fb;
+  if(state.pixels.tt)  px.tiktok_pixel=state.pixels.tt;
+  if(state.pixels.li)  px.linkedin_insight=state.pixels.li;
+  if(state.pixels.ga)  px.google_analytics=state.pixels.ga;
+  if(state.pixels.gtm) px.google_tag_manager=state.pixels.gtm;
+  const config={
+    meta:{pageName:state.pageName,whatsapp:state.whatsapp,email:state.email||undefined,lang,createdAt:new Date().toISOString()},
+    ad:{title:state.adTitle||undefined,description:state.adDesc},
+    tracking:Object.keys(px).length?px:undefined,
+    fields:[
+      ...L.fields.filter(f=>state.fields[f.key]).map(f=>{
+        const o={key:f.key,label:f.label};
+        if(f.key==='color'&&state.colorTags.length)o.options=[...state.colorTags];
+        if(f.key==='size'&&state.sizeSel.length)o.options=[...state.sizeSel];
+        if(f.key==='pointure'&&state.pointureTags.length)o.options=[...state.pointureTags];
+        if(f.key==='region'&&state.regionTags.length)o.options=[...state.regionTags];
+        return o;
+      }),
+      ...state.customQuestions.map((q,i)=>({key:'custom_'+(i+1),label:q.label,type:q.type,...(q.options.length?{options:q.options}:{})}))
+    ],
+    link
+  };
+  document.getElementById('jsonOutput').textContent=JSON.stringify(JSON.parse(JSON.stringify(config)),null,2);
+}
+
+function copyLink(){navigator.clipboard.writeText(document.getElementById('generatedLink').textContent).then(()=>alert(tx('copied'))).catch(()=>{});}
+function copyJson(){navigator.clipboard.writeText(document.getElementById('jsonOutput').textContent).then(()=>alert(tx('copied'))).catch(()=>{});}
+
+/* ═══════════════════════════════════════
+   VALIDATION
+═══════════════════════════════════════ */
+function validate(s){
+  let ok=true;
+  const show=id=>{document.getElementById(id).classList.add('show');ok=false;};
+  const hide=id=>document.getElementById(id).classList.remove('show');
+  if(s===1){
+    const pn=document.getElementById('pageName').value.trim();
+    const wa=document.getElementById('whatsapp').value.trim();
+    const em=document.getElementById('email').value.trim();
+    pn?hide('pageNameErr'):show('pageNameErr');
+    wa?hide('whatsappErr'):show('whatsappErr');
+    (em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))?show('emailErr'):hide('emailErr');
+    if(ok){state.pageName=pn;state.whatsapp=wa;state.email=em;}
+  }
+  if(s===2){
+    const d=document.getElementById('adDesc').value.trim();
+    d?hide('adDescErr'):show('adDescErr');
+    if(ok){state.adTitle=document.getElementById('adTitle').value.trim();state.adDesc=d;}
+  }
+  if(s===3){
+    const any=T[lang].fields.some(f=>state.fields[f.key])||state.customQuestions.length>0;
+    if(!any){document.getElementById('fieldsErr').style.display='block';ok=false;}
+    else document.getElementById('fieldsErr').style.display='none';
+    savePixels();
+  }
+  return ok;
+}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+function goNext(){
+  if(!validate(step))return;
+  if(step<TOTAL){step++;updateUI();if(step===3)initCheckGrid();if(step===4)buildPreview();if(step===5)generateOutput();}
+}
+function goBack(){
+  if(step>1){step--;updateUI();if(step===3)initCheckGrid();}
+}
+function updateUI(){
+  document.querySelectorAll('.step-content').forEach((el,i)=>el.classList.toggle('active',i+1===step));
+  document.querySelectorAll('.step-dot').forEach((dot,i)=>{
+    dot.classList.remove('active','done');
+    if(i+1===step)dot.classList.add('active');
+    else if(i+1<step)dot.classList.add('done');
+  });
+  const pct=((step-1)/(TOTAL-1))*100;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('stepIndicators').style.setProperty('--progress-width',(pct*0.88)+'%');
+  document.getElementById('btnBack').classList.toggle('hidden',step===1);
+  applyAll();
+  setTimeout(()=>{const ins=document.querySelectorAll('.step-content.active input[type="text"],.step-content.active input[type="tel"],.step-content.active textarea');if(ins.length)ins[0].focus();},300);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* INIT */
+applyAll();updateUI();
+</script>
+</body>
+</html>

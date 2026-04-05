@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <script>
+        // Facebook Pixel (optional - add your pixel ID)
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+        document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        // fbq('init', 'YOUR_PIXEL_ID'); // Uncomment and add your pixel ID
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .card.success {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1c1e21;
+            text-align: center;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: #65676b;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1c1e21;
+            margin-bottom: 8px;
+        }
+
+        input,select, textarea {
+            width: 100%;
+            padding: 18px 16px;
+            border: 2px solid #e4e6ea;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: #f5f6f5;
+        }
+
+        input:focus,select:focus, textarea:focus {
+            outline: none;
+            border-color: #1877f2;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: sticky;
+            bottom: 0;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: #166fe5;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(24, 119, 242, 0.4);
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #e4e6ea;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #42c669;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1c1e21;
+            margin-bottom: 10px;
+        }
+
+        .success-text {
+            color: #65676b;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .whatsapp-btn {
+            width: 100%;
+            padding: 16px;
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .whatsapp-btn:hover {
+            background: #20ba5a;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .error {
+            color: #e94435;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-section {
+            display: block;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" id="card">
+            <h1>Get In Touch</h1>
+            <p class="subtitle">We'll respond within 24 hours</p>
+            
+            <form id="contactForm" class="form-section">
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                    <div class="error" id="nameError">Please enter your full name</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 123-4567">
+                    <div class="error" id="phoneError">Please enter a valid phone number</div>
+                </div>
+  
+                             <div class="form-group">
+    <label>Taille *</label>
+    <select id="taille" required>
+        <option value="">Choisir taille</option>
+        <option>S</option>
+        <option>M</option>
+        <option>L</option>
+        <option>XL</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Couleur *</label>
+    <select id="couleur" required>
+        <option value="">Choisir couleur</option>
+        <option>Noir</option>
+        <option>Blanc</option>
+        <option>Rouge</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Région *</label>
+    <select id="region" required>
+        <option value="">Choisir région</option>
+        <option>Tunis</option>
+        <option>Sousse</option>
+        <option>Sfax</option>
+        <option>Nabeul</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Adresse *</label>
+    <input type="text" id="adresse" placeholder="Adresse complète" required>
+</div>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Send Message
+                </button>
+            </form>
+            
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">✓</div>
+                <div class="success-title">Thank you!</div>
+                <div class="success-text">Your message has been sent successfully. We'll get back to you soon.</div>
+                <a href="#" class="whatsapp-btn" id="whatsappBtn" target="_blank">
+                    💬 Continue on WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const form = document.getElementById('contactForm');
+            const card = document.getElementById('card');
+            const successMsg = document.getElementById('successMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const fullName = document.getElementById('fullName');
+            const phone = document.getElementById('phone');
+
+            // Auto-focus first input
+            fullName.focus();
+
+            // Phone number formatting
+            phone.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 10) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                }
+                e.target.value = value;
+            });
+
+            // Form validation
+            function validateForm() {
+                let isValid = true;
+                
+                // Name validation
+                if (!fullName.value.trim()) {
+                    showError('nameError', 'Please enter your full name');
+                    isValid = false;
+                } else {
+                    hideError('nameError');
+                }
+                
+                // Phone validation
+                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+                const cleanPhone = phone.value.replace(/\D/g, '');
+                if (!cleanPhone || cleanPhone.length < 10) {
+                    showError('phoneError', 'Please enter a valid phone number');
+                    isValid = false;
+                } else {
+                    hideError('phoneError');
+                }
+                
+                return isValid;
+            }
+
+            function showError(id, message) {
+                document.getElementById(id).textContent = message;
+                document.getElementById(id).style.display = 'block';
+            }
+
+            function hideError(id) {
+                document.getElementById(id).style.display = 'none';
+            }
+
+            // Form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) return;
+                
+                // Disable button and show loading
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending...';
+                
+               const formData = {
+    fullName: fullName.value.trim(),
+    phone: phone.value.trim(),
+    taille: document.getElementById('taille').value,
+    couleur: document.getElementById('couleur').value,
+    region: document.getElementById('region').value,
+    adresse: document.getElementById('adresse').value
+ 
+};
+
+                try {
+                    // Send to your API endpoint
+                    // await fetch('https://your-api-endpoint.com/submit', {
+                    //     method: 'POST',
+                    //     headers: { 'Content-Type': 'application/json' },
+                    //     body: JSON.stringify(formData)
+                    // });
+
+                    // Track Facebook Pixel Lead event
+                    if (typeof fbq !== 'undefined') {
+                        fbq('track', 'Lead');
+                    }
+
+                    // Show success
+                    form.classList.add('hidden');
+                    successMsg.style.display = 'block';
+                    card.classList.add('success');
+                    
+                    // Set WhatsApp link
+                    const whatsappMessage = `Hi! My name is ${formData.fullName} (${formData.phone}). ${formData.message ? formData.message : 'Interested in your services.'}`;
+                    const encodedMessage = encodeURIComponent(whatsappMessage);
+                    whatsappBtn.href = `https://wa.me/1234567890?text=${encodedMessage}`; // Replace with your WhatsApp number
+
+                } catch (error) {
+                    alert('Something went wrong. Please try again.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                }
+            });
+
+            // Smooth animations
+            document.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('focus', function() {
+                    document.body.style.overflow = 'hidden';
+                });
+                input.addEventListener('blur', function() {
+                    document.body.style.overflow = 'auto';
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

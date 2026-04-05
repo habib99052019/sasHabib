@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réservation</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #1877f2;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #1877f2;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .success {
+      text-align: center;
+      color: green;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Réservez Maintenant</h2>
+
+  <form id="form">
+    <input type="text" placeholder="Votre Nom" required>
+    <input type="tel" placeholder="Téléphone" required>
+    <textarea placeholder="Message (optionnel)"></textarea>
+
+    <button type="submit">Envoyer</button>
+  </form>
+
+  <div class="success" id="success">
+    ✅ Merci ! On vous contactera rapidement
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('form');
+  const success = document.getElementById('success');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // simulation envoi
+    form.style.display = 'none';
+    success.style.display = 'block';
+
+    // هنا تنجم تبعث data لل API متاعك
+    // fetch('https://api.site.com', {...})
+  });
+</script>
+
+</body>
+</html>

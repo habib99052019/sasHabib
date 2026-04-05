@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FormCraft — Landing Page Builder</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --blue: #1877f2;
+    --blue-dark: #0f5fcc;
+    --blue-light: #e8f1fd;
+    --blue-glow: rgba(24,119,242,0.18);
+    --green: #22c55e;
+    --red: #ef4444;
+    --bg: #f0f4fb;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 24px rgba(24,119,242,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 40px rgba(24,119,242,0.15), 0 2px 8px rgba(0,0,0,0.08);
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* ─── HEADER ─── */
+  .app-header {
+    width: 100%;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--blue);
+    letter-spacing: -0.5px;
+  }
+
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--blue), #4f86f7);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 10px var(--blue-glow);
+  }
+
+  .logo-icon svg { width: 18px; height: 18px; fill: #fff; }
+
+  .step-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--blue-light);
+    color: var(--blue);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ─── PROGRESS ─── */
+  .progress-wrap {
+    width: 100%;
+    padding: 0 20px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step-indicators {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0 0;
+    position: relative;
+  }
+
+  .step-indicators::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 14px; right: 14px;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .step-indicators::after {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 14px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue), #4f86f7);
+    z-index: 1;
+    transition: width var(--transition);
+    width: var(--progress-width, 0%);
+  }
+
+  .step-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+    cursor: default;
+  }
+
+  .step-dot-circle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 2.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: var(--font-head);
+    color: var(--muted);
+    transition: all var(--transition);
+  }
+
+  .step-dot.active .step-dot-circle {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+    box-shadow: 0 0 0 4px var(--blue-glow);
+    transform: scale(1.1);
+  }
+
+  .step-dot.done .step-dot-circle {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .step-dot-label {
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    transition: color var(--transition);
+  }
+
+  .step-dot.active .step-dot-label { color: var(--blue); }
+  .step-dot.done .step-dot-label { color: var(--green); }
+
+  .progress-bar-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 10px;
+    margin: 10px 0 0;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), #4f86f7);
+    border-radius: 10px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ─── MAIN ─── */
+  .main {
+    flex: 1;
+    width: 100%;
+    max-width: 520px;
+    padding: 20px 16px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px 20px;
+    animation: fadeSlideIn 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+
+  .card-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* ─── FORM FIELDS ─── */
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+
+  .label-opt {
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-left: 4px;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"], textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    color: var(--text);
+    background: #fafbfc;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    -webkit-appearance: none;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--blue);
+    background: #fff;
+    box-shadow: 0 0 0 4px var(--blue-glow);
+  }
+
+  input.error, textarea.error {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+  }
+
+  .error-msg {
+    font-size: 0.75rem;
+    color: var(--red);
+    font-weight: 500;
+    display: none;
+  }
+
+  .error-msg.show { display: block; }
+
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* ─── CHECKBOX LIST ─── */
+  .check-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fafbfc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 13px;
+    cursor: pointer;
+    transition: all var(--transition);
+    user-select: none;
+  }
+
+  .check-item:hover { border-color: var(--blue); background: var(--blue-light); }
+
+  .check-item.selected {
+    border-color: var(--blue);
+    background: var(--blue-light);
+  }
+
+  .check-item input[type="checkbox"] { display: none; }
+
+  .check-box {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all var(--transition);
+  }
+
+  .check-item.selected .check-box {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .check-box svg { width: 11px; height: 11px; fill: #fff; display: none; }
+  .check-item.selected .check-box svg { display: block; }
+
+  .check-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .check-icon { font-size: 1rem; }
+
+  /* ─── DYNAMIC EXTRAS ─── */
+  .dynamic-extra {
+    margin-top: 14px;
+    padding: 16px;
+    background: var(--blue-light);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--blue);
+    animation: fadeSlideIn 0.25s ease;
+  }
+
+  .dynamic-extra-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── TAGS ─── */
+  .tags-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: opacity var(--transition);
+  }
+
+  .tag:hover { opacity: 0.85; }
+  .tag-x { font-size: 0.85rem; line-height: 1; }
+
+  .tag-input-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .tag-input-row input {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+  }
+
+  .btn-add-tag {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-body);
+    white-space: nowrap;
+    transition: background var(--transition);
+  }
+
+  .btn-add-tag:hover { background: var(--blue-dark); }
+
+  /* ─── SIZE CHECKBOXES ─── */
+  .size-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .size-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: var(--font-head);
+    color: var(--muted);
+    transition: all var(--transition);
+    background: #fff;
+  }
+
+  .size-chip input { display: none; }
+  .size-chip.selected { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+  /* ─── PREVIEW ─── */
+  .preview-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  .phone-frame {
+    width: 290px;
+    background: #1a1a2e;
+    border-radius: 38px;
+    padding: 14px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.28), 0 0 0 2px #2a2a40;
+    position: relative;
+  }
+
+  .phone-notch {
+    width: 80px; height: 22px;
+    background: #1a1a2e;
+    border-radius: 0 0 18px 18px;
+    margin: 0 auto 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .phone-screen {
+    background: #f0f4fb;
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 500px;
+  }
+
+  .preview-page {
+    padding: 18px 16px;
+    font-family: var(--font-body);
+  }
+
+  .preview-header {
+    background: linear-gradient(135deg, var(--blue), #4f86f7);
+    margin: -18px -16px 16px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .preview-header h2 {
+    font-family: var(--font-head);
+    font-size: 1rem;
+    color: #fff;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .preview-header p {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.4;
+  }
+
+  .preview-form-field {
+    margin-bottom: 12px;
+  }
+
+  .preview-form-field label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+  }
+
+  .preview-input-box {
+    background: #fff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    width: 100%;
+  }
+
+  .preview-select-box {
+    background: #fff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .preview-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 4px;
+  }
+
+  .preview-chip {
+    background: var(--blue-light);
+    color: var(--blue);
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(24,119,242,0.25);
+  }
+
+  .preview-submit {
+    width: 100%;
+    background: linear-gradient(135deg, var(--blue), #4f86f7);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: var(--font-head);
+    margin-top: 4px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 14px rgba(24,119,242,0.3);
+  }
+
+  .preview-empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    padding: 30px 0;
+  }
+
+  /* ─── GENERATE RESULT ─── */
+  .result-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .result-item {
+    background: #fafbfc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+  }
+
+  .result-item-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .result-link {
+    font-size: 0.88rem;
+    color: var(--blue);
+    font-weight: 600;
+    word-break: break-all;
+    text-decoration: none;
+  }
+
+  .result-link:hover { text-decoration: underline; }
+
+  .json-box {
+    background: #0f172a;
+    color: #7dd3fc;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-size: 0.72rem;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre;
+    line-height: 1.6;
+  }
+
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--blue-light);
+    color: var(--blue);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-body);
+    margin-top: 8px;
+    transition: background var(--transition);
+  }
+
+  .copy-btn:hover { background: #d3e5fb; }
+
+  .success-banner {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    border: 2px solid #86efac;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .success-icon {
+    width: 38px; height: 38px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.1rem;
+  }
+
+  .success-text h3 {
+    font-family: var(--font-head);
+    font-size: 0.95rem;
+    color: #15803d;
+    font-weight: 700;
+  }
+
+  .success-text p {
+    font-size: 0.78rem;
+    color: #16a34a;
+    margin-top: 2px;
+  }
+
+  /* ─── NAV BUTTONS ─── */
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    gap: 10px;
+    max-width: 520px;
+    margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+
+  .btn {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    font-weight: 700;
+    font-family: var(--font-head);
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-back {
+    background: var(--border);
+    color: var(--muted);
+    flex: 0.6;
+  }
+
+  .btn-back:hover { background: #d4d8e0; color: var(--text); }
+
+  .btn-next {
+    background: linear-gradient(135deg, var(--blue), #4f86f7);
+    color: #fff;
+    box-shadow: 0 4px 16px var(--blue-glow);
+  }
+
+  .btn-next:hover { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); transform: translateY(-1px); box-shadow: 0 6px 20px var(--blue-glow); }
+  .btn-next:active { transform: translateY(0); }
+
+  .btn-generate {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.25);
+  }
+
+  .btn-generate:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ─── HIDDEN ─── */
+  .hidden { display: none !important; }
+
+  /* ─── STEP CONTENT ─── */
+  .step-content { display: none; }
+  .step-content.active { display: block; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (min-width: 480px) {
+    .main { padding: 24px 20px 100px; }
+    .card { padding: 28px 24px; }
+  }
+
+  /* ─── UTILITY ─── */
+  .mt-12 { margin-top: 12px; }
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+    </div>
+    FormCraft
+  </div>
+  <div class="step-badge" id="stepBadge">Step 1 of 5</div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="step-indicators" id="stepIndicators" style="--progress-width: 0%">
+    <div class="step-dot active" data-step="1">
+      <div class="step-dot-circle">1</div>
+      <div class="step-dot-label">Page</div>
+    </div>
+    <div class="step-dot" data-step="2">
+      <div class="step-dot-circle">2</div>
+      <div class="step-dot-label">Ad</div>
+    </div>
+    <div class="step-dot" data-step="3">
+      <div class="step-dot-circle">3</div>
+      <div class="step-dot-label">Fields</div>
+    </div>
+    <div class="step-dot" data-step="4">
+      <div class="step-dot-circle">4</div>
+      <div class="step-dot-label">Preview</div>
+    </div>
+    <div class="step-dot" data-step="5">
+      <div class="step-dot-circle">5</div>
+      <div class="step-dot-label">Generate</div>
+    </div>
+  </div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressBar" style="width:10%"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- STEP 1: Page Info -->
+  <div class="step-content active" id="step1">
+    <div class="card">
+      <div class="card-title">📋 Page Information</div>
+      <div class="card-sub">Set up your landing page basics. This info will be used for notifications and contact.</div>
+
+      <div class="field">
+        <label for="pageName">Page Name</label>
+        <input type="text" id="pageName" placeholder="e.g. Summer Collection 2025" autocomplete="off">
+        <span class="error-msg" id="pageNameErr">Please enter a page name.</span>
+      </div>
+
+      <div class="field">
+        <label for="whatsapp">WhatsApp Number</label>
+        <input type="tel" id="whatsapp" placeholder="e.g. +216 XX XXX XXX" autocomplete="off">
+        <span class="error-msg" id="whatsappErr">Please enter a WhatsApp number.</span>
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span class="label-opt">(optional)</span></label>
+        <input type="email" id="email" placeholder="e.g. hello@mybrand.com" autocomplete="off">
+        <span class="error-msg" id="emailErr">Please enter a valid email.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Ad Content -->
+  <div class="step-content" id="step2">
+    <div class="card">
+      <div class="card-title">📣 Advertisement Content</div>
+      <div class="card-sub">Craft your headline and pitch. Make it compelling for your audience.</div>
+
+      <div class="field">
+        <label for="adTitle">Ad Title <span class="label-opt">(optional)</span></label>
+        <input type="text" id="adTitle" placeholder="e.g. Exclusive Summer Deals — Up to 60% Off!" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label for="adDesc">Description</label>
+        <textarea id="adDesc" placeholder="e.g. Fill in the form below to reserve your order. Limited stock available. Fast delivery across Tunisia!"></textarea>
+        <span class="error-msg" id="adDescErr">Description is required.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Form Builder -->
+  <div class="step-content" id="step3">
+    <div class="card">
+      <div class="card-title">🛠️ Form Fields</div>
+      <div class="card-sub">Select which fields to show on your landing page form.</div>
+
+      <div class="check-grid" id="checkGrid">
+        <!-- items injected by JS -->
+      </div>
+
+      <div id="dynamicExtras"></div>
+      <span class="error-msg mt-12" id="fieldsErr" style="display:none">Please select at least one field.</span>
+    </div>
+    
+  </div>
+
+  <!-- STEP 4: Preview -->
+  <div class="step-content" id="step4">
+    <div class="card" style="padding:20px 16px">
+      <div class="card-title">👁️ Live Preview</div>
+      <div class="card-sub">See how your form looks on mobile.</div>
+    </div>
+    <div class="preview-wrap">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="preview-page" id="previewPage">
+            <div class="preview-empty">Select fields in Step 3 to see your preview.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Generate -->
+  <div class="step-content" id="step5">
+    <div class="card">
+      <div class="card-title">🚀 Your Form is Ready!</div>
+      <div class="card-sub">Here's your generated configuration and unique link.</div>
+
+      <div class="success-banner" id="successBanner">
+        <div class="success-icon">✅</div>
+        <div class="success-text">
+          <h3>Form Generated!</h3>
+          <p>Your landing page is configured and ready to share.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="result-section">
+        <div class="result-item">
+          <div class="result-item-title">🔗 Your Unique Link</div>
+          <a class="result-link" id="generatedLink" href="#" target="_blank"></a>
+          <button class="copy-btn" onclick="copyLink()">📋 Copy Link</button>
+        </div>
+
+        <div class="result-item">
+          <div class="result-item-title">📦 JSON Configuration</div>
+          <div class="json-box" id="jsonOutput"></div>
+          <button class="copy-btn" onclick="copyJson()">📋 Copy JSON</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- NAV BAR -->
+<div class="nav-bar" id="navBar">
+  <button class="btn btn-back hidden" id="btnBack" onclick="goBack()">← Back</button>
+  <button class="btn btn-next" id="btnNext" onclick="goNext()">
+    Next <span>→</span>
+  </button>
+</div>
+
+<script>
+  /* ══════════════════════════════════════════
+     STATE
+  ══════════════════════════════════════════ */
+  let currentStep = 1;
+  const TOTAL = 5;
+
+  const state = {
+    pageName: '', whatsapp: '', email: '',
+    adTitle: '', adDesc: '',
+    fields: {}, // e.g. { name: true, color: true, ... }
+    colorTags: [], sizeSel: [], pointureTags: [], regionTags: []
+  };
+
+  const FIELD_OPTIONS = [
+    { key: 'name',     label: 'Name',       icon: '👤' },
+    { key: 'phone',    label: 'Phone',      icon: '📱' },
+    { key: 'email',    label: 'Email',      icon: '✉️' },
+    { key: 'color',    label: 'Color',      icon: '🎨' },
+    { key: 'size',     label: 'Size',       icon: '👕' },
+    { key: 'pointure', label: 'Pointure',   icon: '👟' },
+    { key: 'region',   label: 'Region',     icon: '📍' },
+    { key: 'address',  label: 'Address',    icon: '🏠' },
+  ];
+
+  const SIZES = ['XS','S','M','L','XL','XXL'];
+
+  /* ══════════════════════════════════════════
+     INIT CHECK GRID
+  ══════════════════════════════════════════ */
+  function initCheckGrid() {
+    const grid = document.getElementById('checkGrid');
+    grid.innerHTML = '';
+    FIELD_OPTIONS.forEach(opt => {
+      const div = document.createElement('div');
+      div.className = 'check-item' + (state.fields[opt.key] ? ' selected' : '');
+      div.dataset.key = opt.key;
+      div.innerHTML = `
+        <div class="check-box">
+          <svg viewBox="0 0 12 9"><path d="M1 4.5L4.5 8 11 1" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="check-icon">${opt.icon}</span>
+        <span class="check-label">${opt.label}</span>
+      `;
+      div.addEventListener('click', () => toggleField(opt.key, div));
+      grid.appendChild(div);
+    });
+    renderDynamicExtras();
+  }
+
+  function toggleField(key, div) {
+    state.fields[key] = !state.fields[key];
+    div.classList.toggle('selected', state.fields[key]);
+    renderDynamicExtras();
+    document.getElementById('fieldsErr').style.display = 'none';
+  }
+
+  /* ══════════════════════════════════════════
+     DYNAMIC EXTRAS
+  ══════════════════════════════════════════ */
+  function renderDynamicExtras() {
+    const wrap = document.getElementById('dynamicExtras');
+    wrap.innerHTML = '';
+
+    if (state.fields.color) {
+      wrap.appendChild(buildTagsExtra('color', '🎨 Colors', 'e.g. Red', state.colorTags, 'colorTags'));
+    }
+    if (state.fields.size) {
+      wrap.appendChild(buildSizeExtra());
+    }
+    if (state.fields.pointure) {
+      wrap.appendChild(buildTagsExtra('pointure', '👟 Shoe Sizes (Pointure)', 'e.g. 40', state.pointureTags, 'pointureTags', 'number'));
+    }
+    if (state.fields.region) {
+      wrap.appendChild(buildTagsExtra('region', '📍 Regions', 'e.g. Tunis', state.regionTags, 'regionTags'));
+    }
+  }
+
+  function buildTagsExtra(id, title, ph, arr, stateKey, inputType = 'text') {
+    const div = document.createElement('div');
+    div.className = 'dynamic-extra';
+    div.innerHTML = `
+      <div class="dynamic-extra-title">${title}</div>
+      <div class="tags-wrap" id="tags_${id}"></div>
+      <div class="tag-input-row">
+        <input type="${inputType}" id="tagInput_${id}" placeholder="${ph}" />
+        <button class="btn-add-tag" onclick="addTag('${id}','${stateKey}')">Add +</button>
+      </div>
+    `;
+    setTimeout(() => renderTags(id, arr, stateKey), 0);
+    const inp = div.querySelector(`#tagInput_${id}`);
+    inp && inp.addEventListener('keydown', e => { if(e.key === 'Enter') { e.preventDefault(); addTag(id, stateKey); }});
+    return div;
+  }
+
+  function renderTags(id, arr, stateKey) {
+    const wrap = document.getElementById('tags_' + id);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    arr.forEach((t, i) => {
+      const span = document.createElement('span');
+      span.className = 'tag';
+      span.innerHTML = `${t} <span class="tag-x" onclick="removeTag('${id}','${stateKey}',${i})">×</span>`;
+      wrap.appendChild(span);
+    });
+  }
+
+  function addTag(id, stateKey) {
+    const inp = document.getElementById('tagInput_' + id);
+    if (!inp) return;
+    const val = inp.value.trim();
+    if (val && !state[stateKey].includes(val)) {
+      state[stateKey].push(val);
+      renderTags(id, state[stateKey], stateKey);
+    }
+    inp.value = '';
+    inp.focus();
+  }
+
+  function removeTag(id, stateKey, idx) {
+    state[stateKey].splice(idx, 1);
+    renderTags(id, state[stateKey], stateKey);
+  }
+
+  function buildSizeExtra() {
+    const div = document.createElement('div');
+    div.className = 'dynamic-extra';
+    div.innerHTML = `
+      <div class="dynamic-extra-title">👕 Sizes</div>
+      <div class="size-chips">
+        ${SIZES.map(s => `
+          <label class="size-chip ${state.sizeSel.includes(s) ? 'selected' : ''}" onclick="toggleSize('${s}', this)">
+            <input type="checkbox" ${state.sizeSel.includes(s) ? 'checked' : ''}> ${s}
+          </label>`).join('')}
+      </div>
+    `;
+    return div;
+  }
+
+  function toggleSize(s, el) {
+    const idx = state.sizeSel.indexOf(s);
+    if (idx > -1) { state.sizeSel.splice(idx, 1); el.classList.remove('selected'); }
+    else { state.sizeSel.push(s); el.classList.add('selected'); }
+  }
+
+  /* ══════════════════════════════════════════
+     PREVIEW
+  ══════════════════════════════════════════ */
+  function buildPreview() {
+    const page = document.getElementById('previewPage');
+    const selectedKeys = FIELD_OPTIONS.filter(f => state.fields[f.key]).map(f => f.key);
+
+    if (selectedKeys.length === 0) {
+      page.innerHTML = '<div class="preview-empty">No fields selected.<br>Go back and choose fields.</div>';
+      return;
+    }
+
+    let html = '';
+
+    // Header
+    const title = state.adTitle || state.pageName || 'Our Offer';
+    const desc = state.adDesc || 'Fill in the form to reserve your order.';
+    html += `<div class="preview-header"><h2>${escHtml(title)}</h2><p>${escHtml(desc)}</p></div>`;
+
+    // Fields
+    selectedKeys.forEach(key => {
+      switch(key) {
+        case 'name':
+          html += field('Full Name', '<div class="preview-input-box">Your name...</div>'); break;
+        case 'phone':
+          html += field('Phone Number', '<div class="preview-input-box">+216 XX XXX XXX</div>'); break;
+        case 'email':
+          html += field('Email', '<div class="preview-input-box">your@email.com</div>'); break;
+        case 'color':
+          const colors = state.colorTags.length ? state.colorTags : ['Red','Blue','White'];
+          html += field('Color', `<div class="preview-select-box">Choose color <span>▾</span></div>
+            <div class="preview-chips">${colors.map(c=>`<span class="preview-chip">${escHtml(c)}</span>`).join('')}</div>`);
+          break;
+        case 'size':
+          const sizes = state.sizeSel.length ? state.sizeSel : SIZES;
+          html += field('Size', `<div class="preview-chips">${sizes.map(s=>`<span class="preview-chip">${s}</span>`).join('')}</div>`);
+          break;
+        case 'pointure':
+          const pts = state.pointureTags.length ? state.pointureTags : ['40','41','42','43'];
+          html += field('Pointure', `<div class="preview-select-box">Choose size <span>▾</span></div>
+            <div class="preview-chips">${pts.map(p=>`<span class="preview-chip">${escHtml(p)}</span>`).join('')}</div>`);
+          break;
+        case 'region':
+          const regs = state.regionTags.length ? state.regionTags : ['Tunis','Sfax','Sousse'];
+          html += field('Region', `<div class="preview-select-box">Choose region <span>▾</span></div>
+            <div class="preview-chips">${regs.map(r=>`<span class="preview-chip">${escHtml(r)}</span>`).join('')}</div>`);
+          break;
+        case 'address':
+          html += field('Delivery Address', '<div class="preview-input-box">Street, City, Zip...</div>'); break;
+      }
+    });
+
+    html += `<button class="preview-submit">✅ Submit Order</button>`;
+    page.innerHTML = html;
+  }
+
+  function field(lbl, inner) {
+    return `<div class="preview-form-field"><label>${lbl}</label>${inner}</div>`;
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* ══════════════════════════════════════════
+     GENERATE
+  ══════════════════════════════════════════ */
+  function generateOutput() {
+    const slug = state.pageName.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') || 'my-form';
+    const uid = Math.random().toString(36).substr(2,8);
+    const link = `https://formcraft.app/p/${slug}-${uid}`;
+    document.getElementById('generatedLink').href = link;
+    document.getElementById('generatedLink').textContent = link;
+
+    const config = {
+      meta: {
+        pageName: state.pageName,
+        whatsapp: state.whatsapp,
+        email: state.email || undefined,
+        createdAt: new Date().toISOString()
+      },
+      ad: {
+        title: state.adTitle || undefined,
+        description: state.adDesc
+      },
+      fields: FIELD_OPTIONS.filter(f => state.fields[f.key]).map(f => {
+        const obj = { key: f.key, label: f.label };
+        if (f.key === 'color' && state.colorTags.length) obj.options = [...state.colorTags];
+        if (f.key === 'size' && state.sizeSel.length) obj.options = [...state.sizeSel];
+        if (f.key === 'pointure' && state.pointureTags.length) obj.options = [...state.pointureTags];
+        if (f.key === 'region' && state.regionTags.length) obj.options = [...state.regionTags];
+        return obj;
+      }),
+      link
+    };
+
+    // Remove undefined
+    const clean = JSON.parse(JSON.stringify(config));
+    document.getElementById('jsonOutput').textContent = JSON.stringify(clean, null, 2);
+  }
+
+  function copyLink() {
+    const txt = document.getElementById('generatedLink').textContent;
+    navigator.clipboard.writeText(txt).then(() => alert('Link copied!')).catch(() => {});
+  }
+
+  function copyJson() {
+    const txt = document.getElementById('jsonOutput').textContent;
+    navigator.clipboard.writeText(txt).then(() => alert('JSON copied!')).catch(() => {});
+  }
+
+  /* ══════════════════════════════════════════
+     VALIDATION
+  ══════════════════════════════════════════ */
+  function validateStep(step) {
+    let ok = true;
+
+    function showErr(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('show');
+      ok = false;
+    }
+    function clearErr(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    if (step === 1) {
+      const pn = document.getElementById('pageName').value.trim();
+      const wa = document.getElementById('whatsapp').value.trim();
+      const em = document.getElementById('email').value.trim();
+
+      pn ? clearErr('pageNameErr') : showErr('pageNameErr', 'Please enter a page name.');
+      wa ? clearErr('whatsappErr') : showErr('whatsappErr', 'Please enter a WhatsApp number.');
+
+      if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
+        showErr('emailErr', 'Please enter a valid email address.');
+      } else { clearErr('emailErr'); }
+
+      if (ok) { state.pageName = pn; state.whatsapp = wa; state.email = em; }
+    }
+
+    if (step === 2) {
+      const desc = document.getElementById('adDesc').value.trim();
+      desc ? clearErr('adDescErr') : showErr('adDescErr', 'Description is required.');
+      if (ok) {
+        state.adTitle = document.getElementById('adTitle').value.trim();
+        state.adDesc = desc;
+      }
+    }
+
+    if (step === 3) {
+      const anySelected = FIELD_OPTIONS.some(f => state.fields[f.key]);
+      if (!anySelected) {
+        document.getElementById('fieldsErr').style.display = 'block';
+        ok = false;
+      }
+    }
+
+    return ok;
+  }
+
+  /* ══════════════════════════════════════════
+     NAVIGATION
+  ══════════════════════════════════════════ */
+  function goNext() {
+    if (!validateStep(currentStep)) return;
+    if (currentStep < TOTAL) {
+      currentStep++;
+      updateUI();
+      if (currentStep === 3) initCheckGrid();
+      if (currentStep === 4) buildPreview();
+      if (currentStep === 5) generateOutput();
+    }
+  }
+
+  function goBack() {
+    if (currentStep > 1) {
+      currentStep--;
+      updateUI();
+      if (currentStep === 3) initCheckGrid();
+    }
+  }
+
+  function updateUI() {
+    // Steps
+    document.querySelectorAll('.step-content').forEach((el, i) => {
+      el.classList.toggle('active', i + 1 === currentStep);
+    });
+
+    // Dots
+    document.querySelectorAll('.step-dot').forEach((dot, i) => {
+      const s = i + 1;
+      dot.classList.remove('active','done');
+      if (s === currentStep) dot.classList.add('active');
+      else if (s < currentStep) dot.classList.add('done');
+    });
+
+    // Progress
+    const pct = ((currentStep - 1) / (TOTAL - 1)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('stepIndicators').style.setProperty('--progress-width',
+      ((currentStep - 1) / (TOTAL - 1) * 100 * 0.88) + '%');
+
+    // Badge
+    document.getElementById('stepBadge').textContent = `Step ${currentStep} of ${TOTAL}`;
+
+    // Nav buttons
+    const btnBack = document.getElementById('btnBack');
+    const btnNext = document.getElementById('btnNext');
+
+    btnBack.classList.toggle('hidden', currentStep === 1);
+
+    if (currentStep === TOTAL) {
+      btnNext.textContent = '🎉 Done!';
+      btnNext.className = 'btn btn-generate';
+      btnNext.onclick = () => {};
+    } else {
+      btnNext.innerHTML = currentStep === TOTAL - 1 ? 'Generate 🚀' : 'Next →';
+      btnNext.className = 'btn btn-next';
+      btnNext.onclick = goNext;
+    }
+
+    // Auto-focus
+    setTimeout(() => {
+      const inputs = document.querySelectorAll(`#step${currentStep} input[type="text"], #step${currentStep} input[type="tel"], #step${currentStep} textarea`);
+      if (inputs.length) inputs[0].focus();
+    }, 300);
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ══════════════════════════════════════════
+     INIT
+  ══════════════════════════════════════════ */
+  updateUI();
+</script>
+</body>
+</html>
