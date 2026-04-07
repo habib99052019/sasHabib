@@ -263,8 +263,6 @@ textarea{resize:vertical;min-height:90px}
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
-  window.firebaseCollection = collection;
-  window.firebaseAddDoc = addDoc;
 </script>
 </head>
 <body>
@@ -971,11 +969,10 @@ async function generateOutput(){
     alert('Please wait until the image upload finishes.');
     return;
   }
-  const cleanObject=obj=>Object.fromEntries(Object.entries(obj).filter(([,value])=>value!==undefined));
   const config={
-    meta:cleanObject({pageName:state.pageName,whatsapp:state.whatsapp,email:state.email||undefined,lang,createdAt:new Date().toISOString()}),
-    ad:cleanObject({title:state.adTitle||undefined,description:state.adDesc,productImage:productImageUrl,price:state.price||undefined}),
-    ...(Object.keys(px).length?{tracking:px}:{}),
+    meta:{pageName:state.pageName,whatsapp:state.whatsapp,email:state.email||undefined,lang,createdAt:new Date().toISOString()},
+    ad:{title:state.adTitle||undefined,description:state.adDesc,productImage:productImageUrl,price:state.price||undefined},
+    tracking:Object.keys(px).length?px:undefined,
     fields:[
       ...L.fields.filter(f=>state.fields[f.key]).map(f=>{
         const o={key:f.key,label:f.label};
@@ -991,7 +988,7 @@ async function generateOutput(){
   };
   // Send to Firebase
   try {
-    const docRef = await window.firebaseAddDoc(window.firebaseCollection(window.db, 'forms'), config);
+    const docRef = await addDoc(collection(window.db, 'forms'), config);
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);

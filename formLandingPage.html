@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Form Landing Page</title>
+<style>
+  :root{
+    --bg:#f7f3ec;
+    --surface:#fffdf8;
+    --surface-2:#fff6e8;
+    --text:#201a16;
+    --muted:#74685f;
+    --line:#eadbcc;
+    --accent:#ff6b35;
+    --accent-dark:#df5524;
+    --accent-soft:#ffe4d9;
+    --success:#198754;
+    --shadow:0 18px 50px rgba(32,26,22,.10);
+    --radius:22px;
+    --radius-sm:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:
+      radial-gradient(circle at top right, rgba(255,107,53,.14), transparent 24rem),
+      linear-gradient(180deg, #fff8ef 0%, var(--bg) 42%, #f3eee7 100%);
+    color:var(--text);
+  }
+  img{max-width:100%;display:block}
+  button,input,select,textarea{font:inherit}
+  .page{
+    width:min(100%, 560px);
+    margin:0 auto;
+    padding:18px 16px 112px;
+  }
+  .hero,.section,.trust{
+    background:rgba(255,253,248,.92);
+    border:1px solid rgba(234,219,204,.9);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(10px);
+  }
+  .hero{
+    overflow:hidden;
+    animation:fadeUp .55s ease both;
+  }
+  .hero-media{
+    aspect-ratio:1/1;
+    background:linear-gradient(135deg,#fff0df,#fffaf5);
+    position:relative;
+  }
+  .hero-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  .hero-badge{
+    position:absolute;
+    top:14px;
+    left:14px;
+    padding:8px 12px;
+    border-radius:999px;
+    background:rgba(32,26,22,.78);
+    color:#fff;
+    font-size:.78rem;
+    font-weight:700;
+    letter-spacing:.02em;
+  }
+  .hero-content{padding:20px}
+  .eyebrow{
+    color:var(--accent-dark);
+    font-weight:800;
+    text-transform:uppercase;
+    font-size:.76rem;
+    letter-spacing:.08em;
+    margin-bottom:10px;
+  }
+  h1{
+    margin:0 0 10px;
+    font-size:clamp(1.7rem,5vw,2.3rem);
+    line-height:1.05;
+  }
+  .hero-desc{
+    margin:0;
+    color:var(--muted);
+    line-height:1.65;
+    font-size:.98rem;
+  }
+  .price-pill{
+    margin-top:16px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--accent-soft);
+    color:var(--accent-dark);
+    border:1px solid rgba(255,107,53,.18);
+    padding:10px 14px;
+    border-radius:999px;
+    font-weight:800;
+  }
+  .trust{
+    margin-top:14px;
+    padding:14px 16px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    text-align:center;
+    animation:fadeUp .7s ease both;
+  }
+  .trust strong{
+    display:block;
+    font-size:.8rem;
+    margin-bottom:4px;
+  }
+  .trust span{
+    color:var(--muted);
+    font-size:.78rem;
+    line-height:1.35;
+  }
+  .section{
+    margin-top:16px;
+    padding:18px;
+    animation:fadeUp .85s ease both;
+  }
+  .section-title{
+    margin:0 0 6px;
+    font-size:1.16rem;
+  }
+  .section-sub{
+    margin:0 0 18px;
+    color:var(--muted);
+    line-height:1.55;
+    font-size:.93rem;
+  }
+  .form-grid{
+    display:grid;
+    gap:14px;
+  }
+  .field{
+    display:grid;
+    gap:7px;
+  }
+  .field label{
+    font-size:.9rem;
+    font-weight:700;
+  }
+  .field input,
+  .field select,
+  .field textarea{
+    width:100%;
+    min-height:52px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--text);
+    border-radius:var(--radius-sm);
+    padding:14px 15px;
+    outline:none;
+    transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  }
+  .field textarea{
+    min-height:96px;
+    resize:vertical;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 4px rgba(255,107,53,.12);
+  }
+  .field.is-error input,
+  .field.is-error select,
+  .field.is-error textarea{
+    border-color:#d93025;
+    background:#fff8f7;
+  }
+  .error-text{
+    font-size:.79rem;
+    color:#d93025;
+    display:none;
+  }
+  .field.is-error .error-text{display:block}
+  .helper{
+    color:var(--muted);
+    font-size:.8rem;
+    line-height:1.45;
+  }
+  .sticky-cta{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg, rgba(247,243,236,.05), rgba(247,243,236,.95) 34%, rgba(247,243,236,.98));
+    backdrop-filter:blur(10px);
+    z-index:30;
+  }
+  .cta-btn{
+    width:min(100%, 560px);
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    min-height:58px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(135deg,var(--accent),#ff834f);
+    color:#fff;
+    font-weight:800;
+    font-size:1rem;
+    box-shadow:0 16px 36px rgba(255,107,53,.32);
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  }
+  .cta-btn:active{transform:translateY(1px) scale(.995)}
+  .cta-btn[disabled]{opacity:.75;cursor:wait}
+  .btn-loader{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,.34);
+    border-top-color:#fff;
+    animation:spin .8s linear infinite;
+    display:none;
+  }
+  .cta-btn.is-loading .btn-loader{display:block}
+  .cta-btn.is-loading .cta-text::after{
+    content:" Chargement...";
+  }
+  .notice{
+    margin-top:12px;
+    text-align:center;
+    color:var(--muted);
+    font-size:.8rem;
+  }
+  .success-box{
+    margin-top:14px;
+    padding:14px 15px;
+    background:#edf8f2;
+    color:var(--success);
+    border:1px solid rgba(25,135,84,.18);
+    border-radius:16px;
+    display:none;
+    font-size:.88rem;
+    line-height:1.5;
+  }
+  .success-box.show{display:block}
+  .empty-state{
+    padding:16px;
+    border-radius:16px;
+    border:1px dashed var(--line);
+    background:var(--surface-2);
+    color:var(--muted);
+    font-size:.9rem;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(16px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  @media (min-width:640px){
+    .page{padding-top:24px}
+    .hero{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      align-items:stretch;
+    }
+    .hero-content{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      padding:28px;
+    }
+    .trust{padding:16px 18px}
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="hero">
+    <div class="hero-media" id="heroMedia"></div>
+    <div class="hero-content">
+      <div class="eyebrow">Offre limitee</div>
+      <h1 id="heroTitle">Formulaire produit</h1>
+      <p class="hero-desc" id="heroDescription">Chargez votre configuration JSON pour afficher automatiquement votre landing page.</p>
+      <div class="price-pill" id="pricePill" hidden>Prix: <span id="heroPrice"></span></div>
+    </div>
+  </section>
+
+  <section class="trust">
+    <div><strong>Rapide</strong><span>Page legere et adaptee au navigateur Facebook.</span></div>
+    <div><strong>Simple</strong><span>Formulaire court avec CTA clair pour convertir vite.</span></div>
+    <div><strong>Direct</strong><span>Redirection WhatsApp sans popup ni blocage.</span></div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Finalisez votre commande</h2>
+    <p class="section-sub">Remplissez les informations ci-dessous. Nous vous redirigeons ensuite directement vers WhatsApp pour confirmer.</p>
+    <form id="leadForm" novalidate>
+      <div class="form-grid" id="formFields"></div>
+      <div class="success-box" id="successBox">Vos informations sont pretes. Redirection vers WhatsApp...</div>
+    </form>
+  </section>
+</main>
+
+<div class="sticky-cta">
+  <button class="cta-btn" id="submitBtn" type="button">
+    <span class="btn-loader" aria-hidden="true"></span>
+    <span class="cta-text">Commander sur WhatsApp</span>
+  </button>
+  <div class="notice">Aucune fenetre popup. La redirection se fait dans l'onglet actuel.</div>
+</div>
+
+<script>
+  const LANDING_DATA = {
+    meta: {
+      pageName: "Collection Ete 2026",
+      whatsapp: "21612345678",
+      email: "contact@marque.com",
+      lang: "fr",
+      createdAt: "2026-04-08T10:00:00.000Z"
+    },
+    ad: {
+      title: "Sandales confort premium",
+      description: "Modele leger, finition propre et confort quotidien. Remplissez le formulaire pour reserver votre commande en quelques secondes.",
+      productImage: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80",
+      price: "149 TND"
+    },
+    tracking: {
+      facebook_pixel: "123456789012345"
+    },
+    fields: [
+      { key: "name", label: "Nom", type: "text" },
+      { key: "phone", label: "Telephone", type: "text" },
+      { key: "email", label: "Email", type: "email" },
+      { key: "region", label: "Region", type: "select", options: ["Tunis", "Sfax", "Sousse"] },
+      { key: "size", label: "Taille", type: "select", options: ["S", "M", "L", "XL"] },
+      { key: "custom_1", label: "Adresse de livraison", type: "text" }
+    ],
+    link: "https://formcraft.app/p/demo"
+  };
+
+  function normalizeField(field){
+    const key = field.key || "";
+    const inferredType = key === "email" ? "email" : (Array.isArray(field.options) && field.options.length ? "select" : "text");
+    return {
+      key,
+      label: field.label || key || "Champ",
+      type: field.type || inferredType,
+      options: Array.isArray(field.options) ? field.options : []
+    };
+  }
+
+  function escapeHtml(value){
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function getPixelId(data){
+    return data?.tracking?.facebook_pixel || "";
+  }
+
+  function renderHero(data){
+    const image = data?.ad?.productImage;
+    const title = data?.ad?.title || data?.meta?.pageName || "Landing page produit";
+    const description = data?.ad?.description || "Completez le formulaire pour commander rapidement sur WhatsApp.";
+    const price = data?.ad?.price;
+    const heroMedia = document.getElementById("heroMedia");
+    const titleEl = document.getElementById("heroTitle");
+    const descEl = document.getElementById("heroDescription");
+    const pricePill = document.getElementById("pricePill");
+    const priceEl = document.getElementById("heroPrice");
+
+    titleEl.textContent = title;
+    descEl.textContent = description;
+
+    heroMedia.innerHTML = image
+      ? '<img src="' + escapeHtml(image) + '" alt="' + escapeHtml(title) + '" loading="lazy"><div class="hero-badge">Disponible</div>'
+      : '<div class="empty-state">Ajoutez une image produit dans le JSON pour enrichir la landing page.</div>';
+
+    if(price){
+      priceEl.textContent = price;
+      pricePill.hidden = false;
+    }
+  }
+
+  function buildFieldMarkup(field){
+    const fieldId = "field_" + field.key;
+    const placeholder = field.type === "email" ? "ex: votre@email.com" : "Votre reponse";
+    if(field.type === "select"){
+      const options = ['<option value="">Selectionnez</option>']
+        .concat(field.options.map(option => '<option value="' + escapeHtml(option) + '">' + escapeHtml(option) + '</option>'))
+        .join("");
+      return [
+        '<div class="field" data-field-wrap="' + escapeHtml(field.key) + '">',
+        '<label for="' + escapeHtml(fieldId) + '">' + escapeHtml(field.label) + '</label>',
+        '<select id="' + escapeHtml(fieldId) + '" name="' + escapeHtml(field.key) + '" data-label="' + escapeHtml(field.label) + '" required>',
+        options,
+        '</select>',
+        '<div class="error-text">Ce champ est obligatoire.</div>',
+        '</div>'
+      ].join("");
+    }
+
+    const inputType = field.type === "email" ? "email" : "text";
+    const helper = field.key === "phone" ? '<div class="helper">Entrez un numero joignable pour confirmer rapidement votre commande.</div>' : "";
+    return [
+      '<div class="field" data-field-wrap="' + escapeHtml(field.key) + '">',
+      '<label for="' + escapeHtml(fieldId) + '">' + escapeHtml(field.label) + '</label>',
+      '<input id="' + escapeHtml(fieldId) + '" name="' + escapeHtml(field.key) + '" type="' + escapeHtml(inputType) + '" placeholder="' + escapeHtml(placeholder) + '" data-label="' + escapeHtml(field.label) + '" required>',
+      helper,
+      '<div class="error-text">Ce champ est obligatoire.</div>',
+      '</div>'
+    ].join("");
+  }
+
+  function renderForm(data){
+    const formFields = document.getElementById("formFields");
+    const fields = Array.isArray(data?.fields) ? data.fields.map(normalizeField) : [];
+    if(!fields.length){
+      formFields.innerHTML = '<div class="empty-state">Aucun champ detecte dans le JSON. Ajoutez un tableau <code>fields</code> pour generer le formulaire.</div>';
+      return [];
+    }
+    formFields.innerHTML = fields.map(buildFieldMarkup).join("");
+    return fields;
+  }
+
+  function setupFacebookPixel(pixelId){
+    if(!pixelId || window.fbq){ return; }
+    !function(f,b,e,v,n,t,s){
+      if(f.fbq) return;
+      n=f.fbq=function(){n.callMethod ? n.callMethod.apply(n,arguments) : n.queue.push(arguments);};
+      if(!f._fbq) f._fbq=n;
+      n.push=n;
+      n.loaded=!0;
+      n.version='2.0';
+      n.queue=[];
+      t=b.createElement(e);
+      t.async=!0;
+      t.src=v;
+      s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s);
+    }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    window.fbq('init', pixelId);
+    window.fbq('track', 'PageView');
+  }
+
+  function validateForm(form, fields){
+    let isValid = true;
+    fields.forEach(field => {
+      const input = form.elements[field.key];
+      const wrap = input.closest(".field");
+      const value = String(input.value || "").trim();
+      const emailOk = field.type !== "email" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      const ok = value && emailOk;
+      wrap.classList.toggle("is-error", !ok);
+      if(!ok){ isValid = false; }
+    });
+    return isValid;
+  }
+
+  function collectValues(form, fields){
+    return fields.map(field => {
+      const input = form.elements[field.key];
+      return {
+        key: field.key,
+        label: field.label,
+        value: String(input.value || "").trim()
+      };
+    });
+  }
+
+  function buildWhatsappUrl(data, values){
+    const phone = String(data?.meta?.whatsapp || "").replace(/[^\d]/g, "");
+    const lines = [
+      "Bonjour, je souhaite commander ce produit.",
+      "",
+      ...values.map(item => item.label + " : " + item.value)
+    ];
+    if(data?.meta?.email){
+      lines.push("", "Email de contact marque : " + data.meta.email);
+    }
+    return "https://wa.me/" + phone + "?text=" + encodeURIComponent(lines.join("\n"));
+  }
+
+  function setSubmitting(isSubmitting){
+    const button = document.getElementById("submitBtn");
+    button.disabled = isSubmitting;
+    button.classList.toggle("is-loading", isSubmitting);
+  }
+
+  function initializeLanding(data){
+    renderHero(data);
+    const fields = renderForm(data);
+    setupFacebookPixel(getPixelId(data));
+
+    const form = document.getElementById("leadForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const successBox = document.getElementById("successBox");
+
+    submitBtn.addEventListener("click", () => {
+      if(!fields.length){ return; }
+      if(!data?.meta?.whatsapp){
+        alert("Numero WhatsApp manquant dans meta.whatsapp");
+        return;
+      }
+      if(!validateForm(form, fields)){
+        const firstError = form.querySelector(".field.is-error input, .field.is-error select");
+        if(firstError){ firstError.focus(); }
+        return;
+      }
+
+      const values = collectValues(form, fields);
+      const whatsappUrl = buildWhatsappUrl(data, values);
+      const payload = {
+        source: "landing-page",
+        createdAt: new Date().toISOString(),
+        pageName: data?.meta?.pageName || "",
+        values
+      };
+
+      setSubmitting(true);
+      successBox.classList.add("show");
+      console.log("Lead payload:", payload);
+
+      if(window.fbq){
+        window.fbq("track", "Lead", {
+          content_name: data?.ad?.title || data?.meta?.pageName || "Landing Page Lead"
+        });
+      }
+
+      setTimeout(() => {
+        window.location.href = whatsappUrl;
+      }, 900);
+    });
+  }
+
+  initializeLanding(LANDING_DATA);
+</script>
+</body>
+</html>

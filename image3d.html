@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f5f5f5;
+}
+
+.container {
+  perspective: 1000px;
+}
+
+.shoe {
+  width: 300px;
+  animation: rotate3d 6s infinite linear;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3));
+}
+
+@keyframes rotate3d {
+  0% {
+    transform: rotateY(0deg) rotateX(10deg);
+  }
+  50% {
+    transform: rotateY(180deg) rotateX(10deg);
+  }
+  100% {
+    transform: rotateY(360deg) rotateX(10deg);
+  }
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx--p8hGBgJmxNiGCPkJcnVFFNhiJOiLtgfw&s" class="shoe">
+</div>
+
+</body>
+</html>
+<!----https://res.cloudinary.com/dpmft7elm/image/upload/f_auto,q_auto/360_F_319261607_GkOX61vzvYA8yTw1pYlzR30X0kCSYP3e_dlsgew-->

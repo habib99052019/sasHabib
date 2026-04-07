@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>mp — FormCraft</title>
+
+<!-- Facebook Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','25588774');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=25588774&ev=PageView&noscript=1"/></noscript>
+
+<style>
+/* ── GOOGLE FONTS ── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+/* ── RESET & VARS ── */
+:root{
+  --ink:#0d0d0d;
+  --ink2:#3a3a3a;
+  --muted:#888;
+  --bg:#fafaf8;
+  --card:#ffffff;
+  --accent:#e8321a;
+  --accent2:#ff5c3e;
+  --gold:#c9972c;
+  --border:#ebebeb;
+  --radius:14px;
+  --r-sm:9px;
+  --shadow:0 2px 20px rgba(0,0,0,.07);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.13);
+  --ff-head:'Playfair Display',serif;
+  --ff-body:'Plus Jakarta Sans',sans-serif;
+  --tr:.22s cubic-bezier(.4,0,.2,1);
+  --whatsapp:#25d366;
+  --whatsapp-dark:#1ebe5d;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--ff-body);
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100dvh;
+  overflow-x:hidden;
+  padding-bottom:90px; /* room for sticky CTA */
+}
+
+/* ── PAGE LOADER ── */
+#pageLoader{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  transition:opacity .4s ease,visibility .4s ease;
+}
+#pageLoader.done{opacity:0;visibility:hidden}
+.loader-ring{
+  width:44px;height:44px;
+  border:3px solid var(--border);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+.loader-text{font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── HERO / HEADER ── */
+.hero{
+  position:relative;
+  background:var(--ink);
+  overflow:hidden;
+  min-height:56vw;
+  max-height:480px;
+}
+.hero-img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  opacity:0;
+  transition:opacity .6s ease;
+}
+.hero-img.loaded{opacity:1}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.65) 100%);
+}
+.hero-content{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:24px 20px 28px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent);
+  color:#fff;
+  font-size:.68rem;font-weight:700;
+  padding:4px 11px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:10px;
+  animation:fadeUp .5s .1s both;
+}
+.hero-title{
+  font-family:var(--ff-head);
+  font-size:clamp(1.7rem, 6vw, 2.4rem);
+  font-weight:900;
+  color:#fff;
+  line-height:1.15;
+  letter-spacing:-.02em;
+  margin-bottom:8px;
+  animation:fadeUp .5s .2s both;
+}
+.hero-desc{
+  font-size:.9rem;
+  color:rgba(255,255,255,.82);
+  line-height:1.6;
+  font-weight:400;
+  animation:fadeUp .5s .3s both;
+}
+
+/* ── TRUST BAR ── */
+.trust-bar{
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-around;
+  animation:fadeIn .5s .4s both;
+}
+.trust-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:.7rem;font-weight:600;color:var(--ink2);
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.trust-icon{font-size:1.2rem}
+
+/* ── MAIN CONTENT ── */
+.main{
+  max-width:520px;
+  margin:0 auto;
+  padding:20px 16px 12px;
+}
+
+/* ── SECTION LABEL ── */
+.section-label{
+  display:flex;align-items:center;gap:10px;
+  font-size:.7rem;font-weight:700;color:var(--accent);
+  text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:16px;
+}
+.section-label::after{content:'';flex:1;height:1.5px;background:var(--border)}
+
+/* ── FORM CARD ── */
+.form-card{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px 18px;
+  border:1px solid var(--border);
+}
+
+/* ── FORM FIELDS ── */
+.field-group{
+  display:flex;flex-direction:column;gap:5px;
+  margin-bottom:14px;
+}
+.field-group:last-of-type{margin-bottom:0}
+.field-label{
+  font-size:.75rem;font-weight:700;color:var(--ink);
+  letter-spacing:.01em;
+}
+.field-required{color:var(--accent);margin-inline-start:2px}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea{
+  width:100%;
+  padding:13px 15px;
+  font-size:.95rem;
+  font-family:var(--ff-body);
+  color:var(--ink);
+  background:#fafaf8;
+  border:2px solid var(--border);
+  border-radius:var(--r-sm);
+  outline:none;
+  transition:border-color var(--tr),box-shadow var(--tr),background var(--tr);
+  -webkit-appearance:none;
+  appearance:none;
+}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23888' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  padding-right:38px;
+  cursor:pointer;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--accent);
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(232,50,26,.1);
+}
+input.invalid,select.invalid{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(232,50,26,.1);
+  animation:shake .3s ease;
+}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.field-error{
+  font-size:.72rem;color:var(--accent);font-weight:600;
+  display:none;
+  margin-top:2px;
+}
+.field-error.show{display:block;animation:fadeIn .2s ease}
+
+/* ── CHIP SELECTOR (for color/pointure) ── */
+.chip-label{
+  font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:8px;display:block;
+}
+.chip-group{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:2px 0;
+}
+.chip{
+  padding:9px 18px;
+  border:2px solid var(--border);
+  border-radius:8px;
+  font-size:.85rem;font-weight:600;
+  font-family:var(--ff-body);
+  color:var(--ink2);
+  background:#fff;
+  cursor:pointer;
+  transition:all var(--tr);
+  user-select:none;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.selected{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+  box-shadow:0 3px 10px rgba(232,50,26,.25);
+  transform:scale(1.04);
+}
+.chip-hidden-input{display:none}
+.chip-error{font-size:.72rem;color:var(--accent);font-weight:600;display:none;margin-top:4px}
+.chip-error.show{display:block;animation:fadeIn .2s ease}
+
+/* ── SUBMIT BUTTON ── */
+.btn-submit{
+  width:100%;
+  margin-top:20px;
+  padding:17px 24px;
+  background:var(--whatsapp);
+  color:#fff;
+  font-size:1rem;font-weight:700;
+  font-family:var(--ff-body);
+  border:none;border-radius:var(--radius);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  letter-spacing:.01em;
+  box-shadow:0 6px 24px rgba(37,211,102,.35);
+  transition:all var(--tr);
+  position:relative;
+  overflow:hidden;
+}
+.btn-submit::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.15) 50%,transparent 100%);
+  background-size:200% 100%;
+  animation:shimmer 2.5s infinite;
+}
+.btn-submit:hover{background:var(--whatsapp-dark);transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,211,102,.4)}
+.btn-submit:active{transform:translateY(0);box-shadow:0 4px 16px rgba(37,211,102,.3)}
+.btn-submit.loading{pointer-events:none;opacity:.8}
+.btn-submit svg{width:22px;height:22px;fill:#fff;flex-shrink:0}
+.btn-spinner{
+  width:20px;height:20px;
+  border:2.5px solid rgba(255,255,255,.4);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:none;
+}
+.btn-submit.loading .btn-spinner{display:block}
+.btn-submit.loading .btn-text,.btn-submit.loading .btn-icon{display:none}
+
+/* ── STICKY CTA (mobile bottom) ── */
+.sticky-cta{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  padding:10px 16px 14px;
+  background:rgba(250,250,248,.95);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+  z-index:100;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  animation:slideUp .4s .6s cubic-bezier(.4,0,.2,1) both;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sticky-cta-text{
+  flex:1;
+  font-size:.75rem;color:var(--muted);line-height:1.4;
+  font-weight:500;
+}
+.sticky-cta-text strong{display:block;color:var(--ink);font-size:.82rem}
+.sticky-btn{
+  flex-shrink:0;
+  padding:13px 20px;
+  background:var(--whatsapp);
+  color:#fff;
+  font-size:.88rem;font-weight:700;
+  font-family:var(--ff-body);
+  border:none;border-radius:10px;
+  cursor:pointer;
+  display:flex;align-items:center;gap:7px;
+  transition:all var(--tr);
+  box-shadow:0 4px 16px rgba(37,211,102,.3);
+  white-space:nowrap;
+  animation:pulse 2.5s 2s infinite;
+}
+.sticky-btn:hover{background:var(--whatsapp-dark)}
+.sticky-btn svg{width:18px;height:18px;fill:#fff}
+
+/* ── SOCIAL PROOF ── */
+.social-proof{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px 18px;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:14px;
+}
+.sp-avatars{display:flex}
+.sp-avatar{
+  width:32px;height:32px;border-radius:50%;
+  border:2.5px solid #fff;
+  background:linear-gradient(135deg,var(--accent),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:700;color:#fff;
+  margin-inline-start:-10px;
+}
+.sp-avatar:first-child{margin-inline-start:0}
+.sp-text{font-size:.8rem;color:var(--ink2);line-height:1.4}
+.sp-text strong{color:var(--ink)}
+.sp-stars{color:#f59e0b;font-size:.85rem;letter-spacing:-.02em}
+
+/* ── GUARANTEE STRIP ── */
+.guarantee{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:16px;
+}
+.guarantee-item{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:12px 8px;
+  text-align:center;
+}
+.guarantee-icon{font-size:1.3rem;margin-bottom:4px;display:block}
+.guarantee-text{font-size:.64rem;font-weight:600;color:var(--ink2);line-height:1.3}
+
+/* ── SUCCESS OVERLAY ── */
+#successOverlay{
+  position:fixed;inset:0;z-index:9998;
+  background:rgba(13,13,13,.7);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;visibility:hidden;
+  transition:opacity .3s ease,visibility .3s ease;
+}
+#successOverlay.show{opacity:1;visibility:visible}
+.success-card{
+  background:#fff;
+  border-radius:20px;
+  padding:32px 24px;
+  text-align:center;
+  max-width:340px;
+  width:100%;
+  animation:scaleIn .35s cubic-bezier(.4,0,.2,1);
+}
+.success-check{
+  width:64px;height:64px;
+  background:linear-gradient(135deg,var(--whatsapp),var(--whatsapp-dark));
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;
+  font-size:1.8rem;
+}
+.success-title{font-family:var(--ff-head);font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:6px}
+.success-sub{font-size:.85rem;color:var(--muted);line-height:1.5}
+.success-wa-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;margin-top:20px;padding:14px;
+  background:var(--whatsapp);color:#fff;
+  font-size:.92rem;font-weight:700;font-family:var(--ff-body);
+  border:none;border-radius:12px;cursor:pointer;
+  transition:background var(--tr);
+}
+.success-wa-btn:hover{background:var(--whatsapp-dark)}
+.success-wa-btn svg{width:20px;height:20px;fill:#fff}
+
+/* ── FOOTER ── */
+.page-footer{
+  text-align:center;padding:24px 20px 8px;
+  font-size:.7rem;color:var(--muted);line-height:1.6;
+}
+.page-footer a{color:var(--muted);text-decoration:none}
+
+/* ── UTILS ── */
+.hidden{display:none!important}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+<div id="pageLoader">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Chargement...</div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div id="successOverlay">
+  <div class="success-card">
+    <div class="success-check">✅</div>
+    <div class="success-title">Commande envoyée !</div>
+    <div class="success-sub">Nous vous redirigeons vers WhatsApp pour confirmer votre commande.</div>
+    <button class="success-wa-btn" id="successWaBtn">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Continuer sur WhatsApp
+    </button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="heroSection">
+  <img
+    class="hero-img"
+    id="heroImg"
+    src="https://res.cloudinary.com/dpmft7elm/image/upload/v1775600772/jj_mlevpy.webp"
+    alt="mp"
+    loading="lazy"
+    width="520"
+    height="320"
+  >
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🔥 Offre limitée</div>
+    <h1 class="hero-title">mp</h1>
+    <p class="hero-desc">ll</p>
+  </div>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="trust-icon">🚚</span>Livraison rapide</div>
+  <div class="trust-item"><span class="trust-icon">🔒</span>Paiement sécurisé</div>
+  <div class="trust-item"><span class="trust-icon">↩️</span>Retour gratuit</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- Social Proof -->
+  <div class="social-proof reveal">
+    <div class="sp-avatars">
+      <div class="sp-avatar">A</div>
+      <div class="sp-avatar">S</div>
+      <div class="sp-avatar">M</div>
+    </div>
+    <div class="sp-text">
+      <div class="sp-stars">★★★★★</div>
+      <strong>+340 clients satisfaits</strong>
+      Commander en moins de 2 minutes !
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="section-label reveal">Remplir votre commande</div>
+
+  <div class="form-card reveal">
+    <form id="orderForm" novalidate>
+
+      <!-- DYNAMIC FIELDS INJECTED HERE -->
+      <div id="formFields"></div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <svg class="btn-icon" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span class="btn-text">Commander sur WhatsApp</span>
+        <div class="btn-spinner"></div>
+      </button>
+
+    </form>
+  </div>
+
+  <!-- Guarantee -->
+  <div class="guarantee reveal">
+    <div class="guarantee-item">
+      <span class="guarantee-icon">🛡️</span>
+      <div class="guarantee-text">Satisfaction garantie</div>
+    </div>
+    <div class="guarantee-item">
+      <span class="guarantee-icon">⚡</span>
+      <div class="guarantee-text">Réponse rapide</div>
+    </div>
+    <div class="guarantee-item">
+      <span class="guarantee-icon">🎁</span>
+      <div class="guarantee-text">Offre exclusive</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  © 2026 — Propulsé par <a href="https://formcraft.app" target="_blank">FormCraft</a>
+</div>
+
+<!-- STICKY CTA -->
+<div class="sticky-cta">
+  <div class="sticky-cta-text">
+    <strong>🔥 Offre disponible maintenant</strong>
+    Cliquez pour commander via WhatsApp
+  </div>
+  <button class="sticky-btn" id="stickyBtn">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Commander
+  </button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   CONFIG — injecté depuis FormCraft JSON
+═══════════════════════════════════════════════ */
+const CONFIG = {
+  meta: {
+    pageName: "kkk",
+    whatsapp:  "1258",
+    email:     "ha.bib90@hotmail.fr",
+    lang:      "en",
+    createdAt: "2026-04-07T22:31:16.961Z"
+  },
+  ad: {
+    title:        "mp",
+    description:  "ll",
+    productImage: "https://res.cloudinary.com/dpmft7elm/image/upload/v1775600772/jj_mlevpy.webp"
+  },
+  tracking: {
+    facebook_pixel: "25588774"
+  },
+  fields: [
+    { key:"name",     label:"Name" },
+    { key:"email",    label:"Email" },
+    { key:"color",    label:"Color",    options:["red","green"] },
+    { key:"pointure", label:"Pointure", options:["40","39"] },
+    { key:"custom_1", label:"ou va tu", type:"text" }
+  ],
+  link: "https://formcraft.app/p/kkk-z3x98bqp"
+};
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+const formValues  = {}; // key → value
+let   waUrl       = '';
+
+/* ═══════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* Determine field type from JSON */
+function getFieldType(field) {
+  if (field.key === 'email') return 'email';
+  if (field.key === 'phone') return 'tel';
+  if (field.options && field.options.length) return 'chips';
+  if (field.type) return field.type; // custom_x with explicit type
+  return 'text';
+}
+
+/* ═══════════════════════════════════════════════
+   BUILD FORM DYNAMICALLY
+═══════════════════════════════════════════════ */
+function buildForm() {
+  const container = $('formFields');
+  container.innerHTML = '';
+
+  CONFIG.fields.forEach(field => {
+    const type = getFieldType(field);
+    const wrapper = document.createElement('div');
+    wrapper.className = 'field-group';
+    wrapper.dataset.key = field.key;
+
+    if (type === 'chips') {
+      /* Chip selector for options */
+      wrapper.innerHTML = `
+        <span class="chip-label">${esc(field.label)}<span class="field-required">*</span></span>
+        <div class="chip-group" id="chips_${field.key}">
+          ${field.options.map(opt =>
+            `<div class="chip" data-val="${esc(opt)}" onclick="selectChip('${field.key}',this)">${esc(opt)}</div>`
+          ).join('')}
+        </div>
+        <div class="chip-error" id="err_${field.key}">Veuillez choisir une option.</div>
+      `;
+      formValues[field.key] = ''; // init empty
+    } else {
+      /* Standard input */
+      const inputType = (type === 'email') ? 'email' : (type === 'tel') ? 'tel' : 'text';
+      const placeholder = getPlaceholder(field.key, field.label);
+      wrapper.innerHTML = `
+        <label class="field-label" for="inp_${field.key}">
+          ${esc(field.label)}<span class="field-required">*</span>
+        </label>
+        <input
+          type="${inputType}"
+          id="inp_${field.key}"
+          name="${field.key}"
+          placeholder="${placeholder}"
+          autocomplete="${getAutocomplete(field.key)}"
+          inputmode="${getInputMode(inputType)}"
+        />
+        <div class="field-error" id="err_${field.key}">Ce champ est obligatoire.</div>
+      `;
+      formValues[field.key] = '';
+    }
+
+    container.appendChild(wrapper);
+  });
+}
+
+function getPlaceholder(key, label) {
+  const map = {
+    name:    'Votre nom complet',
+    email:   'votre@email.com',
+    phone:   '+216 XX XXX XXX',
+    address: 'Votre adresse de livraison',
+  };
+  return map[key] || `${label}...`;
+}
+function getAutocomplete(key) {
+  const map = { name:'name', email:'email', phone:'tel', address:'street-address' };
+  return map[key] || 'off';
+}
+function getInputMode(type) {
+  if (type === 'email') return 'email';
+  if (type === 'tel')   return 'tel';
+  return 'text';
+}
+
+/* ═══════════════════════════════════════════════
+   CHIP SELECTION
+═══════════════════════════════════════════════ */
+function selectChip(key, el) {
+  const group = document.getElementById('chips_' + key);
+  group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  formValues[key] = el.dataset.val;
+  const errEl = document.getElementById('err_' + key);
+  if (errEl) errEl.classList.remove('show');
+}
+
+/* ═══════════════════════════════════════════════
+   VALIDATE FORM
+═══════════════════════════════════════════════ */
+function validateForm() {
+  let valid = true;
+
+  CONFIG.fields.forEach(field => {
+    const type = getFieldType(field);
+    const errEl = document.getElementById('err_' + field.key);
+
+    if (type === 'chips') {
+      if (!formValues[field.key]) {
+        if (errEl) errEl.classList.add('show');
+        valid = false;
+      } else {
+        if (errEl) errEl.classList.remove('show');
+      }
+    } else {
+      const inp = document.getElementById('inp_' + field.key);
+      if (!inp) return;
+      const val = inp.value.trim();
+
+      if (!val) {
+        inp.classList.add('invalid');
+        if (errEl) errEl.classList.add('show');
+        valid = false;
+      } else if (type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+        inp.classList.add('invalid');
+        if (errEl) { errEl.textContent = 'Email invalide.'; errEl.classList.add('show'); }
+        valid = false;
+      } else {
+        inp.classList.remove('invalid');
+        if (errEl) errEl.classList.remove('show');
+        formValues[field.key] = val;
+      }
+    }
+  });
+
+  return valid;
+}
+
+/* ═══════════════════════════════════════════════
+   BUILD WHATSAPP MESSAGE
+═══════════════════════════════════════════════ */
+function buildWaMessage() {
+  const lines = [`🛒 *Nouvelle commande — ${CONFIG.meta.pageName}*`, ''];
+
+  CONFIG.fields.forEach(field => {
+    const val = formValues[field.key] || '—';
+    const emoji = getFieldEmoji(field.key);
+    lines.push(`${emoji} *${field.label}:* ${val}`);
+  });
+
+  lines.push('');
+  lines.push(`🔗 Ref: ${CONFIG.link}`);
+  lines.push(`📅 ${new Date().toLocaleDateString('fr-FR', {day:'2-digit',month:'long',year:'numeric'})}`);
+
+  return lines.join('\n');
+}
+
+function getFieldEmoji(key) {
+  const m = { name:'👤', email:'✉️', phone:'📱', color:'🎨', size:'👕', pointure:'👟', region:'📍', address:'🏠' };
+  return m[key] || '📝';
+}
+
+function buildWaUrl() {
+  const phone   = CONFIG.meta.whatsapp.replace(/\D/g, '');
+  const message = buildWaMessage();
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
+
+/* ═══════════════════════════════════════════════
+   SUBMIT HANDLER
+═══════════════════════════════════════════════ */
+function handleSubmit(e) {
+  if (e) e.preventDefault();
+
+  if (!validateForm()) {
+    /* Scroll to first error */
+    const firstErr = document.querySelector('.field-error.show, .chip-error.show');
+    if (firstErr) firstErr.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
+  /* Facebook Pixel — Lead event */
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'Lead', {
+      content_name: CONFIG.meta.pageName,
+      currency: 'TND',
+      value: 0
+    });
+  }
+
+  /* Log data */
+  console.log('[FormCraft] Submission:', JSON.stringify(formValues, null, 2));
+
+  /* Build WA URL */
+  waUrl = buildWaUrl();
+
+  /* Show loading state */
+  const btn = $('submitBtn');
+  btn.classList.add('loading');
+
+  /* Show success overlay after short delay */
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    $('successOverlay').classList.add('show');
+    $('successWaBtn').onclick = () => redirectToWhatsApp();
+  }, 900);
+}
+
+/* ═══════════════════════════════════════════════
+   WHATSAPP REDIRECT
+   (Compatible Facebook in-app browser)
+═══════════════════════════════════════════════ */
+function redirectToWhatsApp() {
+  $('successOverlay').classList.remove('show');
+  /* Direct location change — works in FB in-app browser */
+  window.location.href = waUrl;
+}
+
+/* ═══════════════════════════════════════════════
+   STICKY BUTTON → scroll to form or submit
+═══════════════════════════════════════════════ */
+function handleStickyClick() {
+  const form = $('orderForm');
+  const rect = form.getBoundingClientRect();
+
+  if (rect.top > window.innerHeight || rect.bottom < 0) {
+    /* Form not visible → scroll to it */
+    form.scrollIntoView({ behavior:'smooth', block:'start' });
+  } else {
+    /* Form visible → submit */
+    $('orderForm').dispatchEvent(new Event('submit', { cancelable:true, bubbles:true }));
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   REVEAL ON SCROLL
+═══════════════════════════════════════════════ */
+function initReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.1 });
+  els.forEach(el => observer.observe(el));
+}
+
+/* ═══════════════════════════════════════════════
+   HERO IMAGE LAZY LOAD
+═══════════════════════════════════════════════ */
+function initHeroImage() {
+  const img = $('heroImg');
+  if (!img) return;
+  if (img.complete) {
+    img.classList.add('loaded');
+  } else {
+    img.addEventListener('load', () => img.classList.add('loaded'));
+    img.addEventListener('error', () => {
+      img.style.display = 'none';
+      $('heroSection').style.minHeight = '200px';
+    });
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   REMOVE INVALID CLASS ON INPUT
+═══════════════════════════════════════════════ */
+function initInputListeners() {
+  CONFIG.fields.forEach(field => {
+    const type = getFieldType(field);
+    if (type === 'chips') return;
+    const inp = document.getElementById('inp_' + field.key);
+    if (!inp) return;
+    inp.addEventListener('input', () => {
+      inp.classList.remove('invalid');
+      const errEl = document.getElementById('err_' + field.key);
+      if (errEl) errEl.classList.remove('show');
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  buildForm();
+  initInputListeners();
+  initReveal();
+  initHeroImage();
+
+  $('orderForm').addEventListener('submit', handleSubmit);
+  $('stickyBtn').addEventListener('click', handleStickyClick);
+
+  /* Hide page loader */
+  setTimeout(() => {
+    $('pageLoader').classList.add('done');
+  }, 400);
+});
+</script>
+</body>
+</html>

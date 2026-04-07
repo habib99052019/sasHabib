@@ -1,0 +1,23 @@
+<input type="file" id="fileInput">
+<button onclick="upload()">Upload</button>
+
+<img id="img" width="200">
+<script>
+function upload() {
+  const file = document.getElementById("fileInput").files[0];
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "ml_default");
+
+  fetch("https://api.cloudinary.com/v1_1/dpmft7elm/image/upload", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("img").src = data.secure_url;
+    console.log(data.secure_url);
+  });
+}
+</script>

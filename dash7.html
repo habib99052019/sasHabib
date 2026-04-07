@@ -59,21 +59,6 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 /* INPUTS */
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 .field:last-child{margin-bottom:0}
-.file-upload-row{display:flex;align-items:center;gap:12px}
-.file-upload-row input[type="file"]{flex:1;min-width:0}
-.upload-preview{
-  width:64px;height:64px;border-radius:12px;border:2px solid var(--border);
-  background:#fafbfc;display:flex;align-items:center;justify-content:center;
-  overflow:hidden;flex-shrink:0;position:relative
-}
-.upload-preview img{width:78%;height:78%;object-fit:contain;display:block}
-.upload-preview-placeholder{font-size:.66rem;color:var(--muted);text-align:center;line-height:1.25;padding:6px}
-.upload-preview.loading::after{
-  content:'';width:22px;height:22px;border-radius:50%;
-  border:2px solid rgba(24,119,242,.18);border-top-color:var(--blue);
-  animation:spin .8s linear infinite;position:absolute
-}
-@keyframes spin{to{transform:rotate(360deg)}}
 label{font-size:.8rem;font-weight:600;color:var(--text)}
 .label-opt{font-weight:400;color:var(--muted);font-size:.75rem;margin-inline-start:4px}
 input[type="text"],input[type="email"],input[type="tel"],input[type="file"],textarea,select{
@@ -249,22 +234,22 @@ textarea{resize:vertical;min-height:90px}
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
   // Firebase configuration (replace with your own)
   const firebaseConfig = {
-     apiKey: "AIzaSyB2nZbZX4DL9nVXmN1Ne_qR7s6m2Aw--vo",
-  authDomain: "angular-realtime-demo-72ed4.firebaseapp.com",
-  projectId: "angular-realtime-demo-72ed4",
-  storageBucket: "angular-realtime-demo-72ed4.firebasestorage.app",
-  messagingSenderId: "765641934438",
-  appId: "1:765641934438:web:e61befe2ece3e39a3ccfa7"
+    apiKey: "your-api-key",
+    authDomain: "your-project.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "your-app-id"
   };
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
-  window.firebaseCollection = collection;
-  window.firebaseAddDoc = addDoc;
+  window.storage = getStorage(app);
 </script>
 </head>
 <body>
@@ -315,17 +300,7 @@ textarea{resize:vertical;min-height:90px}
       <div class="card-sub" id="s2sub"></div>
       <div class="field"><label id="lbAdTitle"></label><input type="text" id="adTitle"></div>
       <div class="field"><label id="lbAdDesc"></label><textarea id="adDesc"></textarea><span class="error-msg" id="adDescErr"></span></div>
-      <div class="field">
-        <label>Image du produit</label>
-        <div class="file-upload-row">
-          <input type="file" accept="image/*" id="productImage">
-          <div class="upload-preview" id="uploadPreview">
-            <span class="upload-preview-placeholder" id="uploadPreviewText">Apercu</span>
-            <img id="uploadedImagePreview" alt="Product preview" loading="lazy" class="hidden">
-          </div>
-          
-        </div>
-      </div>
+      <div class="field"><label>Image du produit</label><input type="file" accept="image/*" id="productImage"></div>
       <div class="field"><label>Prix</label><input type="text" id="price"></div>
     </div>
   </div>
@@ -632,81 +607,11 @@ const TOTAL=5;
 const SIZES=['XS','S','M','L','XL','XXL'];
 const state={
   pageName:'',whatsapp:'',email:'',adTitle:'',adDesc:'',productImage:'',price:'',
-  productImageUrl:'',
-  isUploadingImage:false,
   fields:{},colorTags:[],sizeSel:[],pointureTags:[],regionTags:[],
   customQuestions:[],cqTempOptions:[],cqTempType:'text',
   pixels:{fb:'',tt:'',li:'',ga:'',gtm:''}
 };
 const tx=k=>T[lang][k]!==undefined?T[lang][k]:(T.en[k]||k);
-
-function setUploadPreviewLoading(isLoading){
-  const wrap=document.getElementById('uploadPreview');
-  const text=document.getElementById('uploadPreviewText');
-  const img=document.getElementById('uploadedImagePreview');
-  if(!wrap||!text||!img)return;
-  wrap.classList.toggle('loading',isLoading);
-  if(isLoading){
-    img.classList.add('hidden');
-    text.textContent='Upload...';
-    text.classList.remove('hidden');
-  }else{
-    text.textContent='Apercu';
-    text.classList.toggle('hidden',!!img.src);
-  }
-}
-
-function updateUploadPreview(url){
-  const text=document.getElementById('uploadPreviewText');
-  const img=document.getElementById('uploadedImagePreview');
-  const wrap=document.getElementById('uploadPreview');
-  if(!text||!img||!wrap)return;
-  wrap.classList.remove('loading');
-  if(url){
-    img.src=url;
-    img.classList.remove('hidden');
-    text.classList.add('hidden');
-  }else{
-    img.removeAttribute('src');
-    img.classList.add('hidden');
-    text.textContent='Apercu';
-    text.classList.remove('hidden');
-  }
-}
-
-async function uploadProductImage(file){
-  if(!file)return null;
-  state.isUploadingImage=true;
-  state.productImage=file;
-  state.productImageUrl='';
-  setUploadPreviewLoading(true);
-
-  const formData=new FormData();
-  formData.append('file',file);
-  formData.append('upload_preset','ml_default');
-
-  try{
-    const response=await fetch('https://api.cloudinary.com/v1_1/dpmft7elm/image/upload',{
-      method:'POST',
-      body:formData
-    });
-    const data=await response.json();
-    if(!response.ok||!data.secure_url){
-      throw new Error(data.error?.message||'Cloudinary upload failed');
-    }
-    state.productImage='';
-    state.productImageUrl=data.secure_url;
-    updateUploadPreview(data.secure_url);
-    return data.secure_url;
-  }catch(error){
-    console.error('Cloudinary upload error:',error);
-    updateUploadPreview('');
-    alert('Image upload failed. Please try again.');
-    return null;
-  }finally{
-    state.isUploadingImage=false;
-  }
-}
 
 /* ═══════════════════════════════════════
    LANG
@@ -966,16 +871,16 @@ async function generateOutput(){
   if(state.pixels.li)  px.linkedin_insight=state.pixels.li;
   if(state.pixels.ga)  px.google_analytics=state.pixels.ga;
   if(state.pixels.gtm) px.google_tag_manager=state.pixels.gtm;
-  let productImageUrl = state.productImageUrl || undefined;
-  if(state.isUploadingImage){
-    alert('Please wait until the image upload finishes.');
-    return;
+  let productImageUrl = undefined;
+  if(state.productImage){
+    const storageRef = ref(window.storage, `images/${Date.now()}_${state.productImage.name}`);
+    const snapshot = await uploadBytes(storageRef, state.productImage);
+    productImageUrl = await getDownloadURL(snapshot.ref);
   }
-  const cleanObject=obj=>Object.fromEntries(Object.entries(obj).filter(([,value])=>value!==undefined));
   const config={
-    meta:cleanObject({pageName:state.pageName,whatsapp:state.whatsapp,email:state.email||undefined,lang,createdAt:new Date().toISOString()}),
-    ad:cleanObject({title:state.adTitle||undefined,description:state.adDesc,productImage:productImageUrl,price:state.price||undefined}),
-    ...(Object.keys(px).length?{tracking:px}:{}),
+    meta:{pageName:state.pageName,whatsapp:state.whatsapp,email:state.email||undefined,lang,createdAt:new Date().toISOString()},
+    ad:{title:state.adTitle||undefined,description:state.adDesc,productImage:productImageUrl,price:state.price||undefined},
+    tracking:Object.keys(px).length?px:undefined,
     fields:[
       ...L.fields.filter(f=>state.fields[f.key]).map(f=>{
         const o={key:f.key,label:f.label};
@@ -991,7 +896,7 @@ async function generateOutput(){
   };
   // Send to Firebase
   try {
-    const docRef = await window.firebaseAddDoc(window.firebaseCollection(window.db, 'forms'), config);
+    const docRef = await addDoc(collection(window.db, 'forms'), config);
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -1021,15 +926,7 @@ function validate(s){
   if(s===2){
     const d=document.getElementById('adDesc').value.trim();
     d?hide('adDescErr'):show('adDescErr');
-    if(state.isUploadingImage){
-      ok=false;
-      alert('Please wait until the image upload finishes.');
-    }
-    if(ok){
-      state.adTitle=document.getElementById('adTitle').value.trim();
-      state.adDesc=d;
-      state.price=document.getElementById('price').value.trim();
-    }
+    if(ok){state.adTitle=document.getElementById('adTitle').value.trim();state.adDesc=d;state.productImage=document.getElementById('productImage').files[0];state.price=document.getElementById('price').value.trim();}
   }
   if(s===3){
     const any=T[lang].fields.some(f=>state.fields[f.key])||state.customQuestions.length>0;
@@ -1067,12 +964,6 @@ function updateUI(){
 }
 
 /* INIT */
-document.getElementById('productImage').addEventListener('change',e=>{
-  const file=e.target.files[0];
-  if(file){
-    uploadProductImage(file);
-  }
-});
 applyAll();updateUI();
 </script>
 </body>
