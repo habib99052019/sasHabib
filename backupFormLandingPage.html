@@ -393,114 +393,6 @@
     link: "https://formcraft.app/p/demo"
   };
 
-  const TRANSLATIONS = {
-    fr: {
-      loading: "Chargement...",
-      heroBadge: "Disponible",
-      heroNoImage: "Ajoutez une image produit dans le JSON pour enrichir la landing page.",
-      heroDescriptionDefault: "Completez le formulaire pour commander rapidement sur WhatsApp.",
-      trustFastHeading: "Rapide",
-      trustFastText: "Page legere et adaptee au navigateur Facebook.",
-      trustSimpleHeading: "Simple",
-      trustSimpleText: "Formulaire court avec CTA clair pour convertir vite.",
-      trustDirectHeading: "Direct",
-      trustDirectText: "Redirection WhatsApp sans popup ni blocage.",
-      sectionTitle: "Finalisez votre commande",
-      sectionSub: "Remplissez les informations ci-dessous. Nous vous redirigeons ensuite directement vers WhatsApp pour confirmer.",
-      buttonText: "Commander sur WhatsApp",
-      noticeText: "Aucune fenetre popup. La redirection se fait dans l'onglet actuel.",
-      successText: "Vos informations sont pretes. Redirection vers WhatsApp...",
-      selectPlaceholder: "Selectionnez",
-      defaultInputPlaceholder: "Votre reponse",
-      emailPlaceholder: "ex: votre@email.com",
-      requiredError: "Ce champ est obligatoire.",
-      phoneHelper: "Entrez un numero joignable pour confirmer rapidement votre commande.",
-      whatsappIntro: "Bonjour, je souhaite commander ce produit.",
-      whatsappEmailLabel: "Email de contact marque : ",
-      missingWhatsapp: "Numero WhatsApp manquant dans meta.whatsapp",
-      emailFailAlert: "Échec de l'envoi de l'email de confirmation. Vérifiez la configuration EmailJS et le destinataire.",
-      noFields: "Aucun champ detecte dans le JSON. Ajoutez un tableau <code>fields</code> pour generer le formulaire."
-    },
-    ar: {
-      loading: "جار التحميل...",
-      heroBadge: "متوفر",
-      heroNoImage: "أضف صورة المنتج في JSON لتحسين صفحة الهبوط.",
-      heroDescriptionDefault: "أكمل النموذج لطلب المنتج بسرعة على واتساب.",
-      trustFastHeading: "سريع",
-      trustFastText: "صفحة خفيفة ومتوافقة مع متصفح فيسبوك.",
-      trustSimpleHeading: "بسيط",
-      trustSimpleText: "نموذج قصير مع دعوة لاتخاذ إجراء واضحة.",
-      trustDirectHeading: "مباشر",
-      trustDirectText: "تحويل واتساب بدون نوافذ منبثقة أو حظر.",
-      sectionTitle: "أكمل طلبك",
-      sectionSub: "املأ المعلومات أدناه. سيتم تحويلك بعد ذلك مباشرة إلى واتساب للتأكيد.",
-      buttonText: "اطلب عبر واتساب",
-      noticeText: "لا توجد نافذة منبثقة. يتم التحويل في نفس التبويب.",
-      successText: "معلوماتك جاهزة. يتم التحويل إلى واتساب...",
-      selectPlaceholder: "اختر",
-      defaultInputPlaceholder: "أدخل إجابتك",
-      emailPlaceholder: "مثال: email@example.com",
-      requiredError: "هذا الحقل مطلوب.",
-      phoneHelper: "أدخل رقمًا يمكن الاتصال به لتأكيد الطلب بسرعة.",
-      whatsappIntro: "مرحبًا، أود طلب هذا المنتج.",
-      whatsappEmailLabel: "بريد الماركة الإلكتروني: ",
-      missingWhatsapp: "رقم واتساب مفقود في meta.whatsapp",
-      emailFailAlert: "فشل إرسال رسالة البريد الإلكتروني. تحقق من تكوين EmailJS والمستلم.",
-      noFields: "لم يتم اكتشاف أي حقل في JSON. أضف مصفوفة <code>fields</code> لإنشاء النموذج."
-    }
-  };
-
-  let CURRENT_LANG = "fr";
-
-  function setCurrentLang(data){
-    const params = new URLSearchParams(window.location.search);
-    const urlLang = String(params.get("lang") || "").toLowerCase();
-    if(["fr","ar"].includes(urlLang)){
-      CURRENT_LANG = urlLang;
-      return CURRENT_LANG;
-    }
-    const metaLang = String(data?.meta?.lang || "").toLowerCase();
-    CURRENT_LANG = ["fr","ar"].includes(metaLang) ? metaLang : "fr";
-    return CURRENT_LANG;
-  }
-
-  function t(key){
-    return (TRANSLATIONS[CURRENT_LANG] && TRANSLATIONS[CURRENT_LANG][key]) || TRANSLATIONS.fr[key] || "";
-  }
-
-  function applyTranslations(){
-    const loadingText = document.querySelector(".loading-overlay p");
-    if(loadingText) loadingText.textContent = t("loading");
-
-    const eyebrow = document.querySelector(".eyebrow");
-    if(eyebrow) eyebrow.textContent = t("heroBadge");
-
-    const sectionTitle = document.querySelector(".section-title");
-    if(sectionTitle) sectionTitle.textContent = t("sectionTitle");
-
-    const sectionSub = document.querySelector(".section-sub");
-    if(sectionSub) sectionSub.textContent = t("sectionSub");
-
-    const ctaText = document.querySelector(".cta-text");
-    if(ctaText) ctaText.textContent = t("buttonText");
-
-    const notice = document.querySelector(".notice");
-    if(notice) notice.textContent = t("noticeText");
-
-    const successBox = document.getElementById("successBox");
-    if(successBox) successBox.textContent = t("successText");
-
-    const trustItems = document.querySelectorAll(".trust > div");
-    if(trustItems.length >= 3){
-      trustItems[0].querySelector("strong").textContent = t("trustFastHeading");
-      trustItems[0].querySelector("span").textContent = t("trustFastText");
-      trustItems[1].querySelector("strong").textContent = t("trustSimpleHeading");
-      trustItems[1].querySelector("span").textContent = t("trustSimpleText");
-      trustItems[2].querySelector("strong").textContent = t("trustDirectHeading");
-      trustItems[2].querySelector("span").textContent = t("trustDirectText");
-    }
-  }
-
   // Firebase configuration - replace with your actual config
   const firebaseConfig = {
     apiKey: "AIzaSyB2nZbZX4DL9nVXmN1Ne_qR7s6m2Aw--vo",
@@ -548,7 +440,7 @@
   function renderHero(data){
     const image = data?.ad?.productImage;
     const title = data?.ad?.title || data?.meta?.pageName || "Landing page produit";
-    const description = data?.ad?.description || t("heroDescriptionDefault");
+    const description = data?.ad?.description || "Completez le formulaire pour commander rapidement sur WhatsApp.";
     const price = data?.ad?.price;
     const heroMedia = document.getElementById("heroMedia");
     const titleEl = document.getElementById("heroTitle");
@@ -560,8 +452,8 @@
     descEl.textContent = description;
 
     heroMedia.innerHTML = image
-      ? '<img src="' + escapeHtml(image) + '" alt="' + escapeHtml(title) + '" loading="lazy"><div class="hero-badge">' + escapeHtml(t("heroBadge")) + '</div>'
-      : '<div class="empty-state">' + escapeHtml(t("heroNoImage")) + '</div>';
+      ? '<img src="' + escapeHtml(image) + '" alt="' + escapeHtml(title) + '" loading="lazy"><div class="hero-badge">Disponible</div>'
+      : '<div class="empty-state">Ajoutez une image produit dans le JSON pour enrichir la landing page.</div>';
 
     if(price){
       priceEl.textContent = price;
@@ -571,9 +463,9 @@
 
   function buildFieldMarkup(field){
     const fieldId = "field_" + field.key;
-    const placeholder = field.type === "email" ? t("emailPlaceholder") : t("defaultInputPlaceholder");
+    const placeholder = field.type === "email" ? "ex: votre@email.com" : "Votre reponse";
     if(field.type === "select"){
-      const options = ['<option value="">' + escapeHtml(t("selectPlaceholder")) + '</option>']
+      const options = ['<option value="">Selectionnez</option>']
         .concat(field.options.map(option => '<option value="' + escapeHtml(option) + '">' + escapeHtml(option) + '</option>'))
         .join("");
       return [
@@ -582,19 +474,19 @@
         '<select id="' + escapeHtml(fieldId) + '" name="' + escapeHtml(field.key) + '" data-label="' + escapeHtml(field.label) + '" required>',
         options,
         '</select>',
-        '<div class="error-text">' + escapeHtml(t("requiredError")) + '</div>',
+        '<div class="error-text">Ce champ est obligatoire.</div>',
         '</div>'
       ].join("");
     }
 
     const inputType = field.type === "email" ? "email" : "text";
-    const helper = field.key === "phone" ? '<div class="helper">' + escapeHtml(t("phoneHelper")) + '</div>' : "";
+    const helper = field.key === "phone" ? '<div class="helper">Entrez un numero joignable pour confirmer rapidement votre commande.</div>' : "";
     return [
       '<div class="field" data-field-wrap="' + escapeHtml(field.key) + '">',
       '<label for="' + escapeHtml(fieldId) + '">' + escapeHtml(field.label) + '</label>',
       '<input id="' + escapeHtml(fieldId) + '" name="' + escapeHtml(field.key) + '" type="' + escapeHtml(inputType) + '" placeholder="' + escapeHtml(placeholder) + '" data-label="' + escapeHtml(field.label) + '" required>',
       helper,
-      '<div class="error-text">' + escapeHtml(t("requiredError")) + '</div>',
+      '<div class="error-text">Ce champ est obligatoire.</div>',
       '</div>'
     ].join("");
   }
@@ -603,7 +495,7 @@
     const formFields = document.getElementById("formFields");
     const fields = Array.isArray(data?.fields) ? data.fields.map(normalizeField) : [];
     if(!fields.length){
-      formFields.innerHTML = '<div class="empty-state">' + t("noFields") + '</div>';
+      formFields.innerHTML = '<div class="empty-state">Aucun champ detecte dans le JSON. Ajoutez un tableau <code>fields</code> pour generer le formulaire.</div>';
       return [];
     }
     formFields.innerHTML = fields.map(buildFieldMarkup).join("");
@@ -658,12 +550,12 @@
   function buildWhatsappUrl(data, values){
     const phone = String(data?.meta?.whatsapp || "").replace(/[^\d]/g, "");
     const lines = [
-      t("whatsappIntro"),
+      "Bonjour, je souhaite commander ce produit.",
       "",
       ...values.map(item => item.label + " : " + item.value)
     ];
     if(data?.meta?.email){
-      lines.push("", t("whatsappEmailLabel") + data.meta.email);
+      lines.push("", "Email de contact marque : " + data.meta.email);
     }
     return "https://wa.me/" + phone + "?text=" + encodeURIComponent(lines.join("\n"));
   }
@@ -696,8 +588,6 @@
   }
 
   function initializeLanding(data){
-    setCurrentLang(data);
-    applyTranslations();
     renderHero(data);
     const fields = renderForm(data);
     setupFacebookPixel(getPixelId(data));
@@ -709,7 +599,7 @@
     submitBtn.addEventListener("click", async () => {
       if(!fields.length){ return; }
       if(!data?.meta?.whatsapp){
-        alert(t("missingWhatsapp"));
+        alert("Numero WhatsApp manquant dans meta.whatsapp");
         return;
       }
       if(!validateForm(form, fields)){
@@ -738,7 +628,7 @@
         console.log("Email sent successfully");
       } catch (error) {
         console.error("Email send failed:", error);
-        alert(t("emailFailAlert"));
+        alert("Échec de l'envoi de l'email de confirmation. Vérifiez la configuration EmailJS et le destinataire.");
         // Continue to WhatsApp even if email fails
       }
 
